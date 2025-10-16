@@ -195,6 +195,25 @@
                 ]
               },
               {
+                "tab": "Deep Agents",
+                "pages": [
+                  "oss/python/deepagents/index",
+                  {
+                    "group": "Get started",
+                    "pages": [
+                      "oss/python/deepagents/index",
+                      "oss/python/deepagents/customization"
+                    ]
+                  },
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "oss/python/deepagents/middleware"
+                    ]
+                  }
+                ]
+              },
+              {
                 "tab": "LangGraph",
                 "pages": [
                   "oss/python/langgraph/overview",
@@ -489,6 +508,25 @@
                       "oss/javascript/langchain/deploy",
                       "oss/javascript/langchain/ui",
                       "oss/javascript/langchain/observability"
+                    ]
+                  }
+                ]
+              },
+              {
+                "tab": "Deep Agents",
+                "pages": [
+                  "oss/javascript/deepagents/index",
+                  {
+                    "group": "Get started",
+                    "pages": [
+                      "oss/javascript/deepagents/index",
+                      "oss/javascript/deepagents/customization"
+                    ]
+                  },
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "oss/javascript/deepagents/middleware"
                     ]
                   }
                 ]
