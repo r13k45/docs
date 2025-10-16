@@ -1523,6 +1523,14 @@
   {
     "source": "/langgraph-platform/:path*",
     "destination": "/langsmith/:path*"
+  },
+  {
+    "source": "/oss/python/deepagents/index",
+    "destination": "/oss/python/deepagents/overview"
+  },
+  {
+    "source": "/oss/javascript/deepagents/index",
+    "destination": "/oss/javascript/deepagents/overview"
   }
 ]
 }
