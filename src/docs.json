@@ -263,16 +263,17 @@
               {
                 "tab": "Deep Agents",
                 "pages": [
-                  "oss/python/deepagents/index",
+                  "oss/python/deepagents/overview",
                   {
                     "group": "Get started",
                     "pages": [
-                      "oss/python/deepagents/index",
+                      "oss/python/deepagents/install",
+                      "oss/python/deepagents/quickstart",
                       "oss/python/deepagents/customization"
                     ]
                   },
                   {
-                    "group": "Advanced",
+                    "group": "Core capabilities",
                     "pages": [
                       "oss/python/deepagents/middleware"
                     ]
@@ -515,16 +516,17 @@
               {
                 "tab": "Deep Agents",
                 "pages": [
-                  "oss/javascript/deepagents/index",
+                  "oss/javascript/deepagents/overview",
                   {
                     "group": "Get started",
                     "pages": [
-                      "oss/javascript/deepagents/index",
+                      "oss/javascript/deepagents/install",
+                      "oss/javascript/deepagents/quickstart",
                       "oss/javascript/deepagents/customization"
                     ]
                   },
                   {
-                    "group": "Advanced",
+                    "group": "Core capabilities",
                     "pages": [
                       "oss/javascript/deepagents/middleware"
                     ]
@@ -600,16 +602,17 @@
               {
                 "tab": "Deep Agents",
                 "pages": [
-                  "oss/javascript/deepagents/index",
+                  "oss/javascript/deepagents/overview",
                   {
                     "group": "Get started",
                     "pages": [
-                      "oss/javascript/deepagents/index",
+                      "oss/javascript/deepagents/install",
+                      "oss/javascript/deepagents/quickstart",
                       "oss/javascript/deepagents/customization"
                     ]
                   },
                   {
-                    "group": "Advanced",
+                    "group": "Core capabilities",
                     "pages": [
                       "oss/javascript/deepagents/middleware"
                     ]
