@@ -3,13 +3,13 @@ title: Deep Agents Middleware
 description: Understand the middleware that powers deep agents
 ---
 
-Deep Agents are implemented on top of `create_agent`. As a reminder, Deep Agents have access to:
+Deep Agents are built with a modular middleware architecture. As a reminder, Deep Agents have access to:
 
 1. A planning tool
 2. A filesystem for storing context and long-term memories
 3. The ability to spawn subagents
 
-Each of these features is implemented as a separate AgentMiddleware. When you create a deep agent with `create_deep_agent`, we automatically attach `PlanningMiddleware`, `FilesystemMiddleware` and `SubAgentMiddleware` to your agent, along with a few others.
+Each of these features is implemented as separate middleware. When you create a deep agent with `create_deep_agent`, we automatically attach `PlanningMiddleware`, `FilesystemMiddleware` and `SubAgentMiddleware` to your agent.
 
 Middleware is a composable concept, and you can choose to add as many or as few middleware to an agent depending on your use case. That means that you can use any of the aforementioned middleware independently!
 
@@ -22,18 +22,20 @@ Planning is integral to solving complex problems. If you've used claude code rec
 `PlanningMiddleware` provides your agent with a tool specifically for updating this To-Do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
 
 ```python
-from langchain.agents import create_agent
-from langchain.agents.middleware import PlanningMiddleware
+from deepagents import create_deep_agent
+from deepagents.middleware.planning import PlanningMiddleware
 
-agent = create_agent(
-  model="openai:gpt-4o",
-  tools=[],
-  middleware=[
-    PlanningMiddleware(
-      system_prompt="Use the write_todos_tool to..."  # Optional: Custom addition to the system prompt to instruct when and how the to-do list should be utilized. If not provided, default instructions are used
-      tool_description="The write_todos tool..."  # Optional: Custom description for the write_todos tool. If not provided, a default description is used.
-    ),
-  ],
+# PlanningMiddleware is included by default in create_deep_agent
+# You can customize it if building a custom agent
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[],
+    # Custom planning instructions can be added via middleware
+    middleware=[
+        PlanningMiddleware(
+            system_prompt="Use the write_todos tool to..."  # Optional: Custom addition to the system prompt
+        ),
+    ],
 )
 ```
 
@@ -49,41 +51,41 @@ Context engineering is one of the main challenges in building effective agents. 
 - **edit_file**: Edit an existing file in your filesystem
 
 ```python
-from langchain.agents import create_agent
-from langchain.agents.middleware import FilesystemMiddleware
+from deepagents import create_deep_agent
+from deepagents.middleware.filesystem import FilesystemMiddleware
 
-agent = create_agent(
-  model="openai:gpt-4o",
-  tools=[],
-  middleware=[
-    FilesystemMiddleware(
-      use_longterm_memory=False,  # Enables access to long-term memory, defaults to False
-      system_prompt_extension="Write to the filesystem when...",  # Optional custom addition to the system prompt to instruct when and how the filesystem tools should be utilized. If not provided, default instructions are used
-      custom_tool_descriptions={
-          "ls": "Use the ls tool when...",
-          "read_file": "Use the read_file tool to..."
-      }  # Optional: Custom descriptions for filesystem tools. If no description is provided for a tool, a default is used.
-    ),
-  ],
+# FilesystemMiddleware is included by default in create_deep_agent
+# You can customize it if building a custom agent
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[],
+    middleware=[
+        FilesystemMiddleware(
+            long_term_memory=False,  # Enables access to long-term memory, defaults to False
+            system_prompt="Write to the filesystem when...",  # Optional custom addition to the system prompt
+            custom_tool_descriptions={
+                "ls": "Use the ls tool when...",
+                "read_file": "Use the read_file tool to..."
+            }  # Optional: Custom descriptions for filesystem tools
+        ),
+    ],
 )
 ```
 
 ### Short-term vs Long-term Filesystem
 
-By default, these tools will write to a local "filesystem" in your graph state. If you provide a `Store` object to your agent runtime, you can also enable saving to long-term memory, which persists **across** different threads of your agent. See the [long-term memory guide](/oss/python/langchain/long-term-memory) for a deeper dive into long-term memory.
+By default, these tools will write to a local "filesystem" in your graph state. If you provide a `Store` object to your agent runtime, you can also enable saving to long-term memory, which persists **across** different threads of your agent.
 
 ```python
+from deepagents import create_deep_agent
 from langgraph.store.memory import InMemoryStore
 
-agent = create_agent(
-  model="openai:gpt-4o",
-  tools=[],
-  middleware=[
-    FilesystemMiddleware(
-      use_longterm_memory=True
-    ),
-  ],
-  store=InMemoryStore()
+store = InMemoryStore()
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[],
+    store=store,
+    use_longterm_memory=True
 )
 ```
 
@@ -135,30 +137,28 @@ A subagent is defined with a **name**, **description**, **system prompt**, and *
 For more complex use cases, you can also provide your own pre-built LangGraph graph as a subagent.
 
 ```python
-from langchain.deepagents import create_deep_agent
-from langchain.agents import create_agent
-from langchain.agents.middleware import SubAgentMiddleware
-from langgraph.pregel.remote import RemoteGraph
+from deepagents import create_deep_agent, CompiledSubAgent
+from langgraph.graph import StateGraph
 
-# This is a weather graph
-weather_agent = create_agent(...)
+# Create a custom LangGraph graph
+def create_weather_graph():
+    workflow = StateGraph(...)
+    # Build your custom graph
+    return workflow.compile()
 
-agent = create_agent(
-  model="claude-sonnet-4-20250514",
-  middleware=[
-    SubAgentMiddleware(
-      default_model="claude-sonnet-4-20250514",
-      default_tools=[],
-      subagents=[
-        {
-          "name": "weather",
-          "description": "This subagent can get weather in cities.",
-          "runnable": weather_agent,
-        }
-      ],
-    )
-  ],
+weather_graph = create_weather_graph()
+
+# Wrap it in a CompiledSubAgent
+weather_subagent = CompiledSubAgent(
+    name="weather",
+    description="This subagent can get weather in cities.",
+    runnable=weather_graph
+)
+
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    subagents=[weather_subagent]
 )
 ```
 
-In addition to any user defined subagents, the main agent will have access to a `general-purpose` subagent at all times - this is a subagent with the same instructions as the main agent and all the tools that is has access to. The primary purpose of the `general-purpose` subagent is to context isolation. The main agent can always delegate a complex task to this subagent, and get a concise answer back without any bloat from intermediate tool calls.
+In addition to any user defined subagents, the main agent will have access to a `general-purpose` subagent at all times - this is a subagent with the same instructions as the main agent and all the tools that it has access to. The primary purpose of the `general-purpose` subagent is context isolation. The main agent can always delegate a complex task to this subagent, and get a concise answer back without any bloat from intermediate tool calls.

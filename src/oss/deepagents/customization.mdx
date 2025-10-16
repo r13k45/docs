@@ -13,7 +13,7 @@ Each deep agent tailored to a use case should include a custom system prompt spe
 import os
 from typing import Literal
 from tavily import TavilyClient
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
 
 tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
@@ -41,9 +41,9 @@ Use this to run an internet search for a given query. You can specify the number
 """
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  system_prompt=research_instructions,
-  tools=[internet_search]
+    model="anthropic:claude-sonnet-4-20250514",
+    system_prompt=research_instructions,
+    tools=[internet_search]
 )
 ```
 
@@ -55,7 +55,7 @@ Just like tool-calling agents, a deep agent gets a set of top level tools that i
 import os
 from typing import Literal
 from tavily import TavilyClient
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
 
 tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
@@ -75,8 +75,8 @@ def internet_search(
     )
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  tools=[internet_search]
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[internet_search]
 )
 ```
 
@@ -96,22 +96,21 @@ You can learn more about these tools in the [PlanningMiddleware](/oss/deepagents
 A main feature of Deep Agents is their ability to spawn subagents. You can specify custom subagents that your agent can hand off work to in the `subagents` parameter. Sub agents are useful for [context quarantine](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html#context-quarantine) (to help not pollute the overall context of the main agent) as well as custom instructions.
 
 ```python
-from langchain.deepagents import create_deep_agent
-from langchain.agents.middleware import AgentState, AgentMiddleware
+from deepagents import create_deep_agent
 
 research_subagent = {
     "name": "research-agent",
     "description": "Used to research more in depth questions",
-    "prompt": sub_research_prompt,
+    "system_prompt": sub_research_prompt,
     "tools": [internet_search],
-    "model": "gpt-4.1", # Optional override, defaults to main agent model
-    "middleware": []   # Optional list of additional middleware to provide to the subagent
+    "model": "openai:gpt-4o",  # Optional override, defaults to main agent model
+    "middleware": []  # Optional list of additional middleware to provide to the subagent
 }
 subagents = [research_subagent]
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  subagents=subagents
+    model="anthropic:claude-sonnet-4-20250514",
+    subagents=subagents
 )
 ```
 
@@ -120,7 +119,7 @@ A subagent is defined with a **name**, **description**, **system prompt**, and *
 For more complex use cases, you can also provide your own pre-built LangGraph graph as a subagent.
 
 ```python
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent, CompiledSubAgent
 from langchain.agents import create_agent
 from langgraph.pregel.remote import RemoteGraph
 
@@ -132,15 +131,16 @@ custom_graph = create_agent(
 )
 
 # Use it as a custom subagent
-custom_subagent = {
-    "name": "data-analyzer",
-    "description": "Specialized agent for complex data analysis tasks",
-    "graph": custom_graph
-}
+custom_subagent = CompiledSubAgent(
+    name="data-analyzer",
+    description="Specialized agent for complex data analysis tasks",
+    runnable=custom_graph
+)
 
 subagents = [custom_subagent]
 
 agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
     tools=[internet_search],
     system_prompt=research_instructions,
     subagents=subagents
@@ -151,28 +151,28 @@ In addition to any user defined subagents, deep agents have access to a `general
 
 ## Human-in-the-Loop
 
-A common reality for agents is that some tool operations may be sensitive and require human approval before execution. Deep Agents includes the [Human-in-the-loop Middleware](/oss/python/langchain/middleware#human-in-the-loop) by default. You can provide a tool interrupt config to `create_deep_agent` which is passed to the `HumanInTheLoopMiddleware`. Check out these docs to learn exactly how you can specify an interrupt_config.
+A common reality for agents is that some tool operations may be sensitive and require human approval before execution. Deep Agents supports human-in-the-loop workflows through LangGraph's interrupt capabilities. You can configure which tools require approval using a checkpointer.
 
 ```python
 from langchain_core.tools import tool
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
+from langgraph.checkpoint.memory import MemorySaver
 
 @tool
 def get_weather(city: str) -> str:
-  """Get the weather in a city."""
-  return f"The weather in {city} is sunny."
+    """Get the weather in a city."""
+    return f"The weather in {city} is sunny."
+
+checkpointer = MemorySaver()
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  tools=[get_weather],
-  interrupt_on={
-      "get_weather": {
-          "allow_accept": True,
-          "allow_edit": True,
-          "allow_response": True
-      }
-  }
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[get_weather],
+    checkpointer=checkpointer
 )
+
+# To interrupt before specific tools, configure interrupts in your graph
+# See LangGraph documentation for more details on interrupt configurations
 ```
 
 ## Long-term Memory
@@ -183,20 +183,20 @@ You can extend deep agents with long-term memory by providing a `Store` and sett
 
 ```python
 from langchain_core.tools import tool
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
 from langgraph.store.memory import InMemoryStore
 
 @tool
 def get_weather(city: str) -> str:
-  """Get the weather in a city."""
-  return f"The weather in {city} is sunny."
+    """Get the weather in a city."""
+    return f"The weather in {city} is sunny."
 
-store = InMemoryStore() # Or any other Store object
+store = InMemoryStore()  # Or any other Store object
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  tools=[get_weather],
-  store=store,
-  use_longterm_memory=True
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[get_weather],
+    store=store,
+    use_longterm_memory=True
 )
 ```
 
@@ -206,27 +206,28 @@ An example usage of long-term memory is to store instructions for the agent. An 
 
 ## Additional Middleware
 
-`create_deep_agent` is implemented with AgentMiddleware. You can provide additional middleware as well to extend the state_schema, add tools, or implement middleware hooks. You can learn more about AgentMiddleware in the [middleware documentation](/oss/python/langchain/middleware).
+`create_deep_agent` is implemented with middleware that can be customized. You can provide additional middleware to extend functionality, add tools, or implement custom hooks. Learn more about middleware in the [middleware section](/oss/deepagents/middleware).
 
 ```python
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
+from langchain.tools import tool
 from langchain.agents.middleware import AgentState, AgentMiddleware
 
 @tool
 def get_weather(city: str) -> str:
-  """Get the weather in a city."""
-  return f"The weather in {city} is sunny."
+    """Get the weather in a city."""
+    return f"The weather in {city} is sunny."
 
 @tool
 def get_temperature(city: str) -> str:
-  """Get the temperature in a city."""
-  return f"The weather in {city} is 70 degrees Fahrenheit."
+    """Get the temperature in a city."""
+    return f"The temperature in {city} is 70 degrees Fahrenheit."
 
 class WeatherMiddleware(AgentMiddleware):
   tools = [get_weather, get_temperature]
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  middleware=[WeatherMiddleware()]
+    model="anthropic:claude-sonnet-4-20250514",
+    middleware=[WeatherMiddleware()]
 )
 ```

@@ -16,21 +16,21 @@ Using an LLM to call tools in a loop is the simplest form of an agent. This arch
 
 ## Quickstart
 
-Deep Agents are accessible in the `langchain` package directly
+Deep Agents are available as a standalone library.
 
 ```bash
-pip install langchain
+pip install deepagents
 ```
 
 You can create a Deep Agent with the `create_deep_agent` builder.
 
-(To run the example below, will need to `pip install tavily-python`)
+(To run the example below, you'll need to `pip install tavily-python`)
 
 ```python
 import os
 from typing import Literal
 from tavily import TavilyClient
-from langchain.deepagents import create_deep_agent
+from deepagents import create_deep_agent
 
 tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
@@ -42,14 +42,15 @@ def internet_search(
     include_raw_content: bool = False,
 ):
     """Run a web search"""
-    return tavily_client.search(
+    search_docs = tavily_client.search(
         query,
         max_results=max_results,
         include_raw_content=include_raw_content,
         topic=topic,
     )
+    return search_docs
 
-# Prompt prefix to steer the agent to be an expert researcher
+# System prompt to steer the agent to be an expert researcher
 research_instructions = """You are an expert researcher. Your job is to conduct thorough research, and then write a polished report.
 
 You have access to an internet search tool.
@@ -59,10 +60,10 @@ Use this to run an internet search for a given query. You can specify the number
 """
 
 agent = create_deep_agent(
-  model="claude-sonnet-4-20250514",
-  tools=[internet_search],
-  system_prompt=research_instructions
-).with_config({"recursion_limit": 1000})
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[internet_search],
+    system_prompt=research_instructions
+)
 
 result = agent.invoke({"messages": [{"role": "user", "content": "what is langgraph?"}]})
 ```
