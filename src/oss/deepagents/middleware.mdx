@@ -1,9 +1,10 @@
 ---
 title: Deep Agents Middleware
+sidebarTitle: Middleware
 description: Understand the middleware that powers deep agents
 ---
 
-Deep Agents are built with a modular middleware architecture. As a reminder, Deep Agents have access to:
+Deep agents are built with a modular middleware architecture. Deep agents have access to the following:
 
 1. A planning tool
 2. A filesystem for storing context and long-term memories
@@ -15,11 +16,11 @@ Middleware is a composable concept, and you can choose to add as many or as few 
 
 In the next sections, we'll dive into exactly what each of these middleware provides an agent on its own.
 
-## Planning Middleware
+## Planning middleware
 
-Planning is integral to solving complex problems. If you've used claude code recently, you'll notice how it writes out a To-Do list before tackling complex, multi-part tasks. You'll also notice how it can adapt and update this To-Do list on the fly as more information comes in.
+Planning is integral to solving complex problems. If you've used Claude Code recently, you'll notice how it writes out a To-Do list before tackling complex, multi-part tasks. You'll also notice how it can adapt and update this To-Do list on the fly as more information comes in.
 
-`PlanningMiddleware` provides your agent with a tool specifically for updating this To-Do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
+`PlanningMiddleware` provides your agent with a tool specifically for updating this to-do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
 
 ```python
 from deepagents import create_deep_agent
@@ -39,7 +40,7 @@ agent = create_deep_agent(
 )
 ```
 
-## Filesystem Middleware
+## Filesystem middleware
 
 Context engineering is one of the main challenges in building effective agents. This can be particularly hard when using tools that can return variable length results (ex. web_search, rag), as long ToolResults can quickly fill up your context window.
 
@@ -72,7 +73,7 @@ agent = create_deep_agent(
 )
 ```
 
-### Short-term vs Long-term Filesystem
+### Short-term vs. long-term filesystem
 
 By default, these tools will write to a local "filesystem" in your graph state. If you provide a `Store` object to your agent runtime, you can also enable saving to long-term memory, which persists **across** different threads of your agent.
 
@@ -92,7 +93,7 @@ agent = create_deep_agent(
 
 If you enable `use_longterm_memory=True` and you provide a `Store` in your agent runtime, then any files prefixed with **/memories/** will be saved to the long-term memory store. Note that any agents deployed on LangGraph Platform will automatically be provided a long-term memory store.
 
-## Subagent middleware
+## Subagent Middleware
 
 Handing off tasks to subagents is a great way to isolate context, keeping the context window of the main (supervisor) agent clean while still going deep on a task.
 
