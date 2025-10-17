@@ -4,11 +4,11 @@ sidebarTitle: Overview
 description: Build agents that can plan, use subagents, and leverage file systems for complex tasks
 ---
 
-Deep agents is a standalone library (`deepagents`) for building agents that can tackle complex, multi-step tasks. Built on LangGraph and inspired by applications like Claude Code, Deep Research, and Manus, Deep Agents come equipped with planning capabilities, file systems for context management, and the ability to spawn subagents.
+Deep agents (`deepagents`) is a standalone library for building agents that can tackle complex, multi-step tasks. Built on LangGraph and inspired by applications like Claude Code, Deep Research, and Manus, deep agents come equipped with planning capabilities, file systems for context management, and the ability to spawn subagents.
 
-## When to use Deep Agents
+## When to use deep agents
 
-Use Deep Agents when you need agents that can:
+Use deep agents when you need agents that can:
 - **Handle complex, multi-step tasks** that require planning and decomposition
 - **Manage large amounts of context** through file system tools
 - **Delegate work** to specialized subagents for context isolation
@@ -18,29 +18,29 @@ For simpler use cases, consider using [LangChain's create_agent](/oss/python/lan
 
 ## Core capabilities
 
-**Planning & Task Decomposition**
-Deep Agents include a built-in `write_todos` tool that enables agents to break down complex tasks into discrete steps, track progress, and adapt plans as new information emerges.
+**Planning & task decomposition**
+Deep agents include a built-in `write_todos` tool that enables agents to break down complex tasks into discrete steps, track progress, and adapt plans as new information emerges.
 
-**Context Management**
+**Context management**
 File system tools (`ls`, `read_file`, `write_file`, `edit_file`) allow agents to offload large context to memory, preventing context window overflow and enabling work with variable-length tool results.
 
-**Subagent Spawning**
+**Subagent spawning**
 The `task` tool enables agents to spawn specialized subagents for context isolation. This keeps the main agent's context clean while still going deep on specific subtasks.
 
-**Modular Middleware**
-Deep Agents are built with a composable middleware architecture. Mix and match `PlanningMiddleware`, `FilesystemMiddleware`, and `SubAgentMiddleware` to customize your agent's capabilities.
+**Modular middleware**
+Deep agents are built with a composable middleware architecture. Mix and match `PlanningMiddleware`, `FilesystemMiddleware`, and `SubAgentMiddleware` to customize your agent's capabilities.
 
-**Long-term Memory**
+**Long-term memory**
 Extend agents with persistent memory across threads using LangGraph's Store. Agents can save and retrieve information from previous conversations.
 
 ## Relationship to the LangChain ecosystem
 
-Deep Agents is built on top of:
+Deep agents is built on top of:
 - **LangGraph** - Provides the underlying graph execution and state management
-- **LangChain** - Tools and model integrations work seamlessly with Deep Agents
+- **LangChain** - Tools and model integrations work seamlessly with deep agents
 - **LangSmith** - Observability and deployment through LangGraph Platform
 
-Deep Agents applications can be deployed on [LangGraph Platform](/oss/python/langgraph/deploy) and monitored with [LangSmith](/langsmith/observability).
+Deep agents applications can be deployed on [LangGraph Platform](/oss/python/langgraph/deploy) and monitored with [LangSmith](/langsmith/observability).
 
 ## Get started
 

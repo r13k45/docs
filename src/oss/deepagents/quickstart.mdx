@@ -3,9 +3,9 @@ title: Quickstart
 description: Build your first deep agent in minutes
 ---
 
-This guide will walk you through creating your first deep agent with planning, file system tools, and subagent capabilities.
+This guide walks you through creating your first deep agent with planning, file system tools, and subagent capabilities.
 
-Let's build a research agent that can conduct thorough research and write polished reports.
+You'll build a research agent that can conduct research and write reports.
 
 ## Prerequisites
 
@@ -46,7 +46,6 @@ from deepagents import create_deep_agent
 
 tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
 
-# Search tool to use to do research
 def internet_search(
     query: str,
     max_results: int = 5,

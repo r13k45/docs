@@ -4,17 +4,17 @@ sidebarTitle: Middleware
 description: Understand the middleware that powers deep agents
 ---
 
-Deep agents are built with a modular middleware architecture. Deep agents have access to the following:
+Deep agents are built with a modular middleware architecture. Deep agents have access to:
 
 1. A planning tool
 2. A filesystem for storing context and long-term memories
 3. The ability to spawn subagents
 
-Each of these features is implemented as separate middleware. When you create a deep agent with `create_deep_agent`, we automatically attach `PlanningMiddleware`, `FilesystemMiddleware` and `SubAgentMiddleware` to your agent.
+Each feature is implemented as separate middleware. When you create a deep agent with `create_deep_agent`, we automatically attach `PlanningMiddleware`, `FilesystemMiddleware`, and `SubAgentMiddleware` to your agent.
 
-Middleware is a composable concept, and you can choose to add as many or as few middleware to an agent depending on your use case. That means that you can use any of the aforementioned middleware independently!
+Middleware is composable—you can add as many or as few middleware to an agent as needed. You can use any middleware independently.
 
-In the next sections, we'll dive into exactly what each of these middleware provides an agent on its own.
+The following sections explain what each middleware provides.
 
 ## Planning middleware
 
@@ -42,9 +42,9 @@ agent = create_deep_agent(
 
 ## Filesystem middleware
 
-Context engineering is one of the main challenges in building effective agents. This can be particularly hard when using tools that can return variable length results (ex. web_search, rag), as long ToolResults can quickly fill up your context window.
+Context engineering is a main challenge in building effective agents. This is particularly difficult when using tools that return variable-length results (e.g., web_search, rag), as long tool results can quickly fill your context window.
 
-`FilesystemMiddleware` provides four tools to your agent to interact with both short-term and long-term memory.
+`FilesystemMiddleware` provides four tools for interacting with both short-term and long-term memory.
 
 - **ls**: List the files in your filesystem
 - **read_file**: Read an entire file, or a certain number of lines from a file
@@ -93,11 +93,11 @@ agent = create_deep_agent(
 
 If you enable `use_longterm_memory=True` and you provide a `Store` in your agent runtime, then any files prefixed with **/memories/** will be saved to the long-term memory store. Note that any agents deployed on LangGraph Platform will automatically be provided a long-term memory store.
 
-## Subagent Middleware
+## Subagent middleware
 
-Handing off tasks to subagents is a great way to isolate context, keeping the context window of the main (supervisor) agent clean while still going deep on a task.
+Handing off tasks to subagents isolates context, keeping the main (supervisor) agent's context window clean while still going deep on a task.
 
-The subagents middleware allows you supply subagents through a `task` tool. You can supply subagents through two specifications:
+The subagents middleware allows you to supply subagents through a `task` tool. You can supply subagents through two specifications:
 
 ### SubAgentSpec
 
@@ -163,4 +163,4 @@ agent = create_deep_agent(
 )
 ```
 
-In addition to any user defined subagents, the main agent will have access to a `general-purpose` subagent at all times - this is a subagent with the same instructions as the main agent and all the tools that it has access to. The primary purpose of the `general-purpose` subagent is context isolation. The main agent can always delegate a complex task to this subagent, and get a concise answer back without any bloat from intermediate tool calls.
+In addition to any user-defined subagents, the main agent has access to a `general-purpose` subagent at all times. This subagent has the same instructions as the main agent and all the tools it has access to. The primary purpose of the `general-purpose` subagent is context isolation—the main agent can delegate a complex task to this subagent and get a concise answer back without bloat from intermediate tool calls.
