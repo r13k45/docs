@@ -2,14 +2,14 @@
 title: Short-term memory
 ---
 
-import AlphaCalloutPy from '/snippets/alpha-lc-callout-py.mdx';
-import AlphaCalloutJS from '/snippets/alpha-lc-callout-js.mdx';
+import StableCalloutPy from '/snippets/stable-lc-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lc-callout-js.mdx';
 
 :::python
-<AlphaCalloutPy />
+<StableCalloutPy />
 :::
 :::js
-<AlphaCalloutJS />
+<StableCalloutJS />
 :::
 
 ## Overview
@@ -67,7 +67,7 @@ import { MemorySaver } from "@langchain/langgraph";
 const checkpointer = new MemorySaver();
 
 const agent = createAgent({
-    model: "anthropic:claude-sonnet-4-5-20250929",
+    model: "anthropic:claude-sonnet-4-5",
     tools: [],
     checkpointer,
 });
@@ -222,6 +222,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents import create_agent, AgentState
 from langchain.agents.middleware import before_model
 from langgraph.runtime import Runtime
+from langchain_core.runnables import RunnableConfig
 from typing import Any
 
 @before_model
@@ -246,7 +247,8 @@ def trim_messages(state: AgentState, runtime: Runtime) -> dict[str, Any] | None:
 agent = create_agent(
     model,
     tools=tools,
-    middleware=[trim_messages]
+    middleware=[trim_messages],
+    checkpointer=InMemorySaver(),
 )
 
 config: RunnableConfig = {"configurable": {"thread_id": "1"}}

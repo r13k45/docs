@@ -2,14 +2,14 @@
 title: Streaming
 ---
 
-import AlphaCalloutPy from '/snippets/alpha-lg-callout-py.mdx';
-import AlphaCalloutJS from '/snippets/alpha-lg-callout-js.mdx';
+import StableCalloutPy from '/snippets/stable-lg-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lg-callout-js.mdx';
 
 :::python
-<AlphaCalloutPy />
+<StableCalloutPy />
 :::
 :::js
-<AlphaCalloutJS />
+<StableCalloutJS />
 :::
 
 LangGraph implements a streaming system to surface real-time updates. Streaming is crucial for enhancing the responsiveness of applications built on LLMs. By displaying output progressively, even before a complete response is ready, streaming significantly improves user experience (UX), particularly when dealing with the latency of LLMs.
@@ -1371,7 +1371,7 @@ Set `disable_streaming=True` when initializing the model.
     from langchain.chat_models import init_chat_model
 
     model = init_chat_model(
-        "anthropic:claude-sonnet-4-5-20250929",
+        "anthropic:claude-sonnet-4-5",
         # Set disable_streaming=True to disable streaming for the chat model
         disable_streaming=True  # [!code highlight]
 

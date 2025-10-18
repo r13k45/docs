@@ -2,16 +2,16 @@
 title: Models
 ---
 
-import AlphaCalloutPy from '/snippets/alpha-lc-callout-py.mdx';
-import AlphaCalloutJS from '/snippets/alpha-lc-callout-js.mdx';
+import StableCalloutPy from '/snippets/stable-lc-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lc-callout-js.mdx';
 import ChatModelTabsPy from '/snippets/chat-model-tabs.mdx';
 import ChatModelTabsJS from '/snippets/chat-model-tabs-js.mdx';
 
 :::python
-<AlphaCalloutPy />
+<StableCalloutPy />
 :::
 :::js
-<AlphaCalloutJS />
+<StableCalloutJS />
 :::
 
 [LLMs](https://en.wikipedia.org/wiki/Large_language_model) are powerful AI tools that can interpret and generate text like humans. They're versatile enough to write content, translate languages, summarize, and answer questions without needing specialized training for each task.
@@ -132,7 +132,7 @@ Using @[`init_chat_model`], pass these parameters as inline <Tooltip tip="Arbitr
 
 ```python Initialize using model parameters
 model = init_chat_model(
-    "anthropic:claude-sonnet-4-5-20250929",
+    "anthropic:claude-sonnet-4-5",
     # Kwargs passed to the model:
     temperature=0.7,
     timeout=30,
@@ -145,7 +145,7 @@ Using `initChatModel`, pass these parameters as inline parameters:
 
 ```typescript Initialize using model parameters
 const model = await initChatModel(
-    "anthropic:claude-sonnet-4-5-20250929",
+    "anthropic:claude-sonnet-4-5",
     { temperature: 0.7, timeout: 30, max_tokens: 1000 }
 )
 ```
@@ -1639,7 +1639,7 @@ configurable_model.invoke(
 )
 configurable_model.invoke(
     "what's your name",
-        config={"configurable": {"model": "claude-sonnet-4-5-20250929"}},  # Run with Claude
+        config={"configurable": {"model": "claude-sonnet-4-5"}},  # Run with Claude
 )
 ```
 
@@ -1660,7 +1660,7 @@ configurable_model.invoke(
         "what's your name",
             config={
             "configurable": {
-                "first_model": "claude-sonnet-4-5-20250929",
+                "first_model": "claude-sonnet-4-5",
                 "first_temperature": 0.5,
                 "first_max_tokens": 100,
             }
@@ -1714,7 +1714,7 @@ configurable_model.invoke(
     ```python
     llm_with_tools.invoke(
         "what's bigger in 2024 LA or NYC",
-            config={"configurable": {"model": "claude-sonnet-4-5-20250929"}},
+            config={"configurable": {"model": "claude-sonnet-4-5"}},
     ).tool_calls
     ```
     ```
