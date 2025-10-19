@@ -26,6 +26,7 @@ If you were using any of the following from the `langchain` package, you'll need
 - Legacy chains (`LLMChain`, `ConversationChain`, etc.)
 - The indexing API
 - The hub module (for managing prompts programmatically)
+- Embeddings modules (e.g. `CacheBackedEmbeddings` and community embeddings)
 - [`langchain-community`](https://pypi.org/project/langchain-community) re-exports
 - Other deprecated functionality
 
@@ -832,12 +833,13 @@ The `langchain` package namespace has been significantly reduced in v1 to focus 
 
 ### `langchain-classic`
 
-If you were using any of the following from the `langchain` package, you'll need to install `langchain-classic` and update your imports:
+If you were using any of the following from the `langchain` package, you'll need to install [`langchain-classic`](https://pypi.org/project/langchain-classic/) and update your imports:
 
 - Legacy chains (`LLMChain`, `ConversationChain`, etc.)
 - The indexing API
 - The hub module (for managing prompts programmatically)
-- `langchain-community` re-exports
+- Embeddings modules (e.g. `CacheBackedEmbeddings` and community embeddings)
+- [`langchain-community`](https://pypi.org/project/langchain-community) re-exports
 - Other deprecated functionality
 
 <CodeGroup>
