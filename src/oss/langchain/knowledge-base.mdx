@@ -3,6 +3,16 @@ title: Build a semantic search engine with LangChain
 sidebarTitle: Semantic search
 ---
 
+import StableCalloutPy from '/snippets/stable-lg-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lg-callout-js.mdx';
+
+:::python
+<StableCalloutPy />
+:::
+:::js
+<StableCalloutJS />
+:::
+
 import EmbeddingsTabsPy from '/snippets/embeddings-tabs-py.mdx';
 import EmbeddingsTabsJS from '/snippets/embeddings-tabs-js.mdx';
 import VectorstoreTabsPy from '/snippets/vectorstore-tabs-py.mdx';
@@ -146,7 +156,7 @@ However, the LangChain ecosystem implements [document loaders](/oss/langchain/re
 
 ### Loading documents
 
-Let's load a PDF into a sequence of @[`Document`] objects. There is a sample PDF in the LangChain repo [here](https://github.com/langchain-ai/langchain/tree/master/docs/docs/example_data) -- a 10-k filing for Nike from 2023. We can consult the LangChain documentation for [available PDF document loaders](/oss/integrations/document_loaders/#pdfs).
+Let's load a PDF into a sequence of @[`Document`] objects. [Here is a sample PDF](https://github.com/langchain-ai/langchain/blob/v0.3/docs/docs/example_data/nke-10k-2023.pdf) -- a 10-k filing for Nike from 2023. We can consult the LangChain documentation for [available PDF document loaders](/oss/integrations/document_loaders/#pdfs).
 
 :::python
 ```python

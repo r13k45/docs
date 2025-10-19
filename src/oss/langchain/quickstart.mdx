@@ -2,14 +2,14 @@
 title: Quickstart
 ---
 
-import AlphaCalloutPy from '/snippets/alpha-lc-callout-py.mdx';
-import AlphaCalloutJS from '/snippets/alpha-lc-callout-js.mdx';
+import StableCalloutPy from '/snippets/stable-lc-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lc-callout-js.mdx';
 
 :::python
-<AlphaCalloutPy />
+<StableCalloutPy />
 :::
 :::js
-<AlphaCalloutJS />
+<StableCalloutJS />
 :::
 
 This quickstart takes you from a simple setup to a fully functional AI agent in just a few minutes.
@@ -27,7 +27,7 @@ def get_weather(city: str) -> str:
     return f"It's always sunny in {city}!"
 
 agent = create_agent(
-    model="anthropic:claude-sonnet-4-5-20250929",
+    model="anthropic:claude-sonnet-4-5",
     tools=[get_weather],
     system_prompt="You are a helpful assistant",
 )
@@ -56,7 +56,7 @@ const getWeather = tool(
 );
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [getWeather],
 });
 
@@ -219,7 +219,7 @@ Let's walk through each step:
         from langchain.chat_models import init_chat_model
 
         model = init_chat_model(
-            "anthropic:claude-sonnet-4-5-20250929",
+            "anthropic:claude-sonnet-4-5",
             temperature=0.5,
             timeout=10,
             max_tokens=1000
@@ -232,7 +232,7 @@ Let's walk through each step:
         import { initChatModel } from "langchain";
 
         const model = await initChatModel(
-          "anthropic:claude-sonnet-4-5-20250929",
+          "anthropic:claude-sonnet-4-5",
           { temperature: 0.5, timeout: 10, maxTokens: 1000 }
         );
         ```
@@ -344,7 +344,7 @@ Let's walk through each step:
         import { createAgent } from "langchain";
 
         const agent = createAgent({
-          model: "anthropic:claude-sonnet-4-5-20250929",
+          model: "anthropic:claude-sonnet-4-5",
           prompt: systemPrompt,
           tools: [getUserLocation, getWeather],
           responseFormat,
@@ -422,7 +422,7 @@ def get_user_location(runtime: ToolRuntime[Context]) -> str:
 
 # Configure model
 model = init_chat_model(
-    "anthropic:claude-sonnet-4-5-20250929",
+    "anthropic:claude-sonnet-4-5",
     temperature=0
 )
 
@@ -523,7 +523,7 @@ const getUserLocation = tool(
 
 // Configure model
 const model = await initChatModel(
-  "anthropic:claude-sonnet-4-5-20250929",
+  "anthropic:claude-sonnet-4-5",
   { temperature: 0 }
 );
 
@@ -538,7 +538,7 @@ const checkpointer = new MemorySaver();
 
 // Create agent
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   prompt: systemPrompt,
   tools: [getUserLocation, getWeather],
   responseFormat,

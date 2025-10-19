@@ -10,12 +10,14 @@ The `docs/` directory contains the markdown files for the site, with the main en
 
 ## Contributing
 
-As these docs are built from the source code, the best way to contribute is to make changes in the source code itself. This can include:
+As these docs are built from the source code, the best way to contribute is to **make changes in the source code** itself. This can include:
 
 - Improving docstrings
 - Adding missing docstrings
 - Fixing typos
 - etc.
+
+You will notice that at the top of each page are two icons: one to view the page source, and the other to edit the page. The "view source" icon takes you to the markdown file for that page, while the "edit page" icon takes you to the relevant source code file in GitHub. Use these links to help you navigate to the right place to make your contributions.
 
 ---
 
@@ -164,7 +166,7 @@ The `pyproject.dev.toml` file expects repositories to be cloned in this structur
   ├── langchain-redis/
   ├── langchain-sema4/
   ├── langchain-snowflake/
-  ├── langchain-tavily/
+  ├── langchain-tavily/      # (External org)
   ├── langchain-together/
   ├── langchain-unstructured/
   ├── langchain-upstage/

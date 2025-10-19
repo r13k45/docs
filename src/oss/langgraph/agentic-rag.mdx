@@ -3,6 +3,16 @@ title: Build a custom RAG agent
 sidebarTitle: Custom RAG agent
 ---
 
+import StableCalloutPy from '/snippets/stable-lg-callout-py.mdx';
+import StableCalloutJS from '/snippets/stable-lg-callout-js.mdx';
+
+:::python
+<StableCalloutPy />
+:::
+:::js
+<StableCalloutJS />
+:::
+
 ## Overview
 
 In this tutorial we will build a [retrieval](/oss/langchain/retrieval) agent using LangGraph.
@@ -31,7 +41,7 @@ Let's download the required packages and set our API keys:
 :::python
 ```python
 %%capture --no-stderr
-%pip install -U --quiet langgraph "langchain[openai]" langchain-community langchain-text-splitters
+pip install -U --quiet langgraph "langchain[openai]" langchain-community langchain-text-splitters
 ```
 
 ```python

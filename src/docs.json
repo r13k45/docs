@@ -199,6 +199,12 @@
                 "pages": [
                   "oss/python/langgraph/overview",
                   {
+                    "group": "LangGraph v1.0",
+                    "pages": [
+                      "oss/python/releases/langgraph-v1"
+                    ]
+                  },
+                  {
                     "group": "Get started",
                     "pages": [
                       "oss/python/langgraph/install",
@@ -276,6 +282,7 @@
                 "tab": "Integrations",
                 "pages": [
                   "oss/python/integrations/providers/overview",
+                  "oss/python/integrations/providers/all_providers",
                   {
                     "group": "Popular Providers",
                     "icon": "user-group",
@@ -302,8 +309,7 @@
                       "oss/python/integrations/document_loaders/index",
                       "oss/python/integrations/stores/index"
                     ]
-                  },
-                  "oss/python/integrations/providers/all_providers"
+                  }
                 ]
               },
               {
@@ -528,6 +534,13 @@
                 "tab": "LangGraph",
                 "pages": [
                   "oss/javascript/langgraph/overview",
+                  {
+                    "group": "LangGraph v1.0",
+                    "pages": [
+                      "oss/javascript/releases/langgraph-v1",
+                      "oss/javascript/migrate/langgraph-v1"
+                    ]
+                  },
                   {
                     "group": "Get started",
                     "pages": [

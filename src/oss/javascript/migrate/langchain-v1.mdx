@@ -3,6 +3,10 @@ title: LangChain v1 migration guide
 sidebarTitle: Migration guide
 ---
 
+import AlphaCalloutJS from '/snippets/alpha-lc-callout-js.mdx';
+
+<AlphaCalloutJS />
+
 This migration guide outlines the major changes in LangChain v1. To learn more about the new features of v1, see the [introductory post](/oss/releases/langchain-v1).
 
 To upgrade,
@@ -28,7 +32,7 @@ In v1, the react agent prebuilt is now in the langchain package. The table below
 
 | Section | What changed |
 |---------|--------------|
-| [Import path](#import-path) | Package moved from `@langchain/langgraph/prebuilts` to `langchain/agents` |
+| [Import path](#import-path) | Package moved from `@langchain/langgraph/prebuilts` to `langchain` |
 | [Prompts](#prompts) | Parameter renamed to `systemPrompt`, dynamic prompts use middleware |
 | [Pre-model hook](#pre-model-hook) | Replaced by middleware with `beforeModel` method |
 | [Post-model hook](#post-model-hook) | Replaced by middleware with `afterModel` method |
@@ -42,7 +46,7 @@ In v1, the react agent prebuilt is now in the langchain package. The table below
 
 ### Import path
 
-The import path for the react agent prebuilt has changed from `@langchain/langgraph/prebuilts` to `langchain/agents`. The name of the function has changed from `createReactAgent` to `createAgent`:
+The import path for the react agent prebuilt has changed from `@langchain/langgraph/prebuilts` to `langchain`. The name of the function has changed from `createReactAgent` to `createAgent`:
 
 ```typescript
 import { createReactAgent } from "@langchain/langgraph/prebuilts"; // [!code --]
@@ -148,18 +152,6 @@ const contextSchema = z.object({
   userRole: z.enum(["expert", "beginner"]).default("user"),
 });
 
-const userRolePrompt = dynamicSystemPromptMiddleware((request) => {
-  const userRole = request.runtime.context.userRole;
-  const basePrompt = "You are a helpful assistant.";
-
-  if (userRole === "expert") {
-    return `${basePrompt} Provide detailed technical responses.`;
-  } else if (userRole === "beginner") {
-    return `${basePrompt} Explain concepts simply and avoid jargon.`;
-  }
-  return basePrompt;
-});
-
 const agent = createReactAgent({
   model,
   tools,
@@ -202,11 +194,11 @@ v1 includes built-in summarization middleware:
 import { createAgent, summarizationMiddleware } from "langchain";
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools,
   middleware: [
     summarizationMiddleware({
-      model: "anthropic:claude-sonnet-4-5-20250929",
+      model: "anthropic:claude-sonnet-4-5",
       maxTokensBeforeSummary: 1000,
     }),
   ],
@@ -220,7 +212,7 @@ function customSummarization(state) {
 }
 
 const agent = createReactAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools,
   preModelHook: customSummarization,
 });
@@ -242,7 +234,7 @@ v1 includes a built-in human-in-the-loop middleware:
 import { createAgent, humanInTheLoopMiddleware } from "langchain";
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [readEmail, sendEmail],
   middleware: [
     humanInTheLoopMiddleware({
@@ -261,7 +253,7 @@ function customHumanInTheLoopHook(state) {
 }
 
 const agent = createReactAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [readEmail, sendEmail],
   postModelHook: customHumanInTheLoopHook,
 });
@@ -304,7 +296,7 @@ const greet = tool(
 );
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [greet],
   middleware: [userState],
 });
@@ -333,7 +325,7 @@ const greet = tool(
 
 // Custom state was provided via agent-level state schema or accessed ad hoc in hooks
 const agent = createReactAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [greet],
   stateSchema: UserState,
 });
@@ -420,7 +412,7 @@ const errorHandling = createMiddleware({
 });
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [checkWeather, searchWeb],
   middleware: [errorHandling],
 });
@@ -429,7 +421,7 @@ const agent = createAgent({
 import { createReactAgent } from "@langchain/langgraph/prebuilts";
 
 const agent = createReactAgent({
-  model: "anthropic:claude-sonnet-4-5-20250929",
+  model: "anthropic:claude-sonnet-4-5",
   tools: [checkWeather, searchWeb],
   // Error handling commonly implemented inside tool code or post hooks
 });

@@ -5,6 +5,7 @@
 ::: langchain.agents
     options:
       group_by_category: false
+      parameter_headings: true
       members:
         - create_agent
         - AgentState
