@@ -10,7 +10,7 @@ Deep agents are built with a modular middleware architecture. Deep agents have a
 2. A filesystem for storing context and long-term memories
 3. The ability to spawn subagents
 
-Each feature is implemented as separate middleware. When you create a deep agent with `create_deep_agent`, we automatically attach `PlanningMiddleware`, `FilesystemMiddleware`, and `SubAgentMiddleware` to your agent.
+Each feature is implemented as separate middleware. When you create a deep agent with `create_deep_agent`, we automatically attach `TodoListMiddleware`, `FilesystemMiddleware`, and `SubAgentMiddleware` to your agent.
 
 Middleware is composable—you can add as many or as few middleware to an agent as needed. You can use any middleware independently.
 
@@ -20,20 +20,19 @@ The following sections explain what each middleware provides.
 
 Planning is integral to solving complex problems. If you've used Claude Code recently, you'll notice how it writes out a To-Do list before tackling complex, multi-part tasks. You'll also notice how it can adapt and update this To-Do list on the fly as more information comes in.
 
-`PlanningMiddleware` provides your agent with a tool specifically for updating this to-do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
+`TodoListMiddleware` provides your agent with a tool specifically for updating this to-do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
 
 ```python
-from deepagents import create_deep_agent
-from deepagents.middleware.planning import PlanningMiddleware
+from langchain.agents import create_agent
+from langchain.agents.middleware import TodoListMiddleware
 
-# PlanningMiddleware is included by default in create_deep_agent
+# TodoListMiddleware is included by default in create_deep_agent
 # You can customize it if building a custom agent
-agent = create_deep_agent(
+agent = create_agent(
     model="anthropic:claude-sonnet-4-20250514",
-    tools=[],
     # Custom planning instructions can be added via middleware
     middleware=[
-        PlanningMiddleware(
+        TodoListMiddleware(
             system_prompt="Use the write_todos tool to..."  # Optional: Custom addition to the system prompt
         ),
     ],
@@ -52,17 +51,16 @@ Context engineering is a main challenge in building effective agents. This is pa
 - **edit_file**: Edit an existing file in your filesystem
 
 ```python
-from deepagents import create_deep_agent
+from langchain.agents import create_agent
 from deepagents.middleware.filesystem import FilesystemMiddleware
 
 # FilesystemMiddleware is included by default in create_deep_agent
 # You can customize it if building a custom agent
-agent = create_deep_agent(
+agent = create_agent(
     model="anthropic:claude-sonnet-4-20250514",
-    tools=[],
     middleware=[
         FilesystemMiddleware(
-            long_term_memory=False,  # Enables access to long-term memory, defaults to False
+            long_term_memory=False,  # Enables access to long-term memory, defaults to False. You must attach a store to use long-term memory.
             system_prompt="Write to the filesystem when...",  # Optional custom addition to the system prompt
             custom_tool_descriptions={
                 "ls": "Use the ls tool when...",
@@ -85,7 +83,6 @@ store = InMemoryStore()
 
 agent = create_deep_agent(
     model="anthropic:claude-sonnet-4-20250514",
-    tools=[],
     store=store,
     use_longterm_memory=True
 )
@@ -97,14 +94,13 @@ If you enable `use_longterm_memory=True` and you provide a `Store` in your agent
 
 Handing off tasks to subagents isolates context, keeping the main (supervisor) agent's context window clean while still going deep on a task.
 
-The subagents middleware allows you to supply subagents through a `task` tool. You can supply subagents through two specifications:
-
-### SubAgentSpec
+The subagents middleware allows you to supply subagents through a `task` tool.
 
 ```python
-from langchain.tools import tool
+from langchain_core.tools import tool
 from langchain.agents import create_agent
-from langchain.agents.middleware import SubAgentMiddleware
+from deepagents.middleware.subagents import SubAgentMiddleware
+
 
 @tool
 def get_weather(city: str) -> str:
@@ -134,12 +130,12 @@ agent = create_agent(
 
 A subagent is defined with a **name**, **description**, **system prompt**, and **tools**. You can also provide a subagent with a custom **model**, or with additional **middleware**. This can be particularly useful when you want to give the subagent an additional state key to share with the main agent.
 
-### CompiledSubAgentSpec
-
 For more complex use cases, you can also provide your own pre-built LangGraph graph as a subagent.
 
 ```python
-from deepagents import create_deep_agent, CompiledSubAgent
+from langchain.agents import create_agent
+from deepagents.middleware.subagents import SubAgentMiddleware
+from deepagents import CompiledSubAgent
 from langgraph.graph import StateGraph
 
 # Create a custom LangGraph graph
@@ -157,9 +153,15 @@ weather_subagent = CompiledSubAgent(
     runnable=weather_graph
 )
 
-agent = create_deep_agent(
+agent = create_agent(
     model="anthropic:claude-sonnet-4-20250514",
-    subagents=[weather_subagent]
+    middleware=[
+        SubAgentMiddleware(
+            default_model="claude-sonnet-4-20250514",
+            default_tools=[],
+            subagents=[weather_subagent],
+        )
+    ],
 )
 ```
 
