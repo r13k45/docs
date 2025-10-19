@@ -12,9 +12,9 @@ if [[ "${VERCEL:-0}" == "1" ]] && [[ -n "${MKDOCS_INSIDERS}" ]]; then
     echo "  Installing MkDocs Material Insiders..."
 
     # Uninstall regular mkdocs-material if it exists
-    if uv pip list | grep -q "mkdocs-material"; then
+    if uv pip list --system | grep -q "mkdocs-material"; then
         echo "  Removing regular mkdocs-material..."
-        uv pip uninstall --yes mkdocs-material || true
+        uv pip uninstall --system --yes mkdocs-material || true
     fi
 
     # Install MkDocs Material Insiders from private repo
@@ -22,7 +22,7 @@ if [[ "${VERCEL:-0}" == "1" ]] && [[ -n "${MKDOCS_INSIDERS}" ]]; then
     INSIDERS_URL="git+https://${MKDOCS_INSIDERS}@github.com/squidfunk/mkdocs-material-insiders.git@${INSIDERS_VERSION}"
 
     echo "  Installing: mkdocs-material-insiders@${INSIDERS_VERSION}"
-    uv pip install "${INSIDERS_URL}"
+    uv pip install --system "${INSIDERS_URL}"
 
     echo "✓ MkDocs Material Insiders installed successfully"
 else
