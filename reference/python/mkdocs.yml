@@ -163,9 +163,9 @@ plugins:
 
   # https://squidfunk.github.io/mkdocs-material/plugins/group/
   # Conditional plugin loading for Material for MkDocs Insiders features
-  # Only enabled when VERCEL=1 (Insiders version is installed and we are building on Vercel for prod)
+  # Only enabled when ENABLE_INSIDERS_PLUGINS=true (set by install-mkdocs.sh when Insiders is installed)
   - group:
-      enabled: !ENV [VERCEL, false]
+      enabled: !ENV [ENABLE_INSIDERS_PLUGINS, false]
       plugins:
         # https://squidfunk.github.io/mkdocs-material/plugins/typeset/
         # Useful to render formatting in TOC/sidebar (code, icons)
