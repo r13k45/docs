@@ -40,18 +40,18 @@ build:
 serve-clean-docs:
 	@./install-mkdocs.sh
 	@if [ "$$VERCEL" = "1" ] && [ -n "$$MKDOCS_INSIDERS" ]; then \
-		ENABLE_INSIDERS_PLUGINS=true uv run python -m mkdocs serve -c -f mkdocs.yml --strict; \
+		ENABLE_INSIDERS_PLUGINS=true uv run --no-sync python -m mkdocs serve -c -f mkdocs.yml --strict; \
 	else \
-		uv run python -m mkdocs serve -c -f mkdocs.yml --strict; \
+		uv run --no-sync python -m mkdocs serve -c -f mkdocs.yml --strict; \
 	fi
 
 # For local development; uses --dirty to avoid rebuilding unchanged files
 serve-docs:
 	@./install-mkdocs.sh
 	@if [ "$$VERCEL" = "1" ] && [ -n "$$MKDOCS_INSIDERS" ]; then \
-		ENABLE_INSIDERS_PLUGINS=true uv run python -m mkdocs serve -f mkdocs.yml --dirty; \
+		ENABLE_INSIDERS_PLUGINS=true uv run --no-sync python -m mkdocs serve -f mkdocs.yml --dirty; \
 	else \
-		uv run python -m mkdocs serve -f mkdocs.yml --dirty; \
+		uv run --no-sync python -m mkdocs serve -f mkdocs.yml --dirty; \
 	fi
 
 # format-docs:
