@@ -244,6 +244,7 @@ Now, create an agent with the model, tools, and prompt:
 ```python
 from langchain.agents import create_agent
 
+
 agent = create_agent(
     model,
     tools,
@@ -468,6 +469,7 @@ LangChain agents feature support for built-in [human-in-the-loop middleware](/os
 from langchain.agents import create_agent
 from langchain.agents.middleware import HumanInTheLoopMiddleware # [!code highlight]
 from langgraph.checkpoint.memory import InMemorySaver # [!code highlight]
+
 
 agent = create_agent(
     model,

@@ -61,6 +61,7 @@ Add middleware by passing it to @[`create_agent`]:
 from langchain.agents import create_agent
 from langchain.agents.middleware import SummarizationMiddleware, HumanInTheLoopMiddleware
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[...],
@@ -104,6 +105,7 @@ Automatically summarize conversation history when approaching token limits.
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import SummarizationMiddleware
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -211,6 +213,7 @@ Pause agent execution for human approval, editing, or rejection of tool calls be
 from langchain.agents import create_agent
 from langchain.agents.middleware import HumanInTheLoopMiddleware
 from langgraph.checkpoint.memory import InMemorySaver
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -328,6 +331,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain.agents.middleware.prompt_caching import AnthropicPromptCachingMiddleware
 from langchain.agents import create_agent
 
+
 LONG_PROMPT = """
 Please be a helpful assistant.
 
@@ -420,6 +424,7 @@ Limit the number of model calls to prevent infinite loops or excessive costs.
 from langchain.agents import create_agent
 from langchain.agents.middleware import ModelCallLimitMiddleware
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[...],
@@ -499,6 +504,7 @@ Limit the number of tool calls to specific tools or all tools.
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import ToolCallLimitMiddleware
+
 
 # Limit all tool calls
 global_limiter = ToolCallLimitMiddleware(thread_limit=20, run_limit=10)
@@ -596,6 +602,7 @@ Automatically fallback to alternative models when the primary model fails.
 from langchain.agents import create_agent
 from langchain.agents.middleware import ModelFallbackMiddleware
 
+
 agent = create_agent(
     model="openai:gpt-4o",  # Primary model
     tools=[...],
@@ -671,6 +678,7 @@ Detect and handle Personally Identifiable Information in conversations.
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import PIIMiddleware
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -800,6 +808,7 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import TodoListMiddleware
 from langchain.messages import HumanMessage
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[...],
@@ -863,6 +872,7 @@ Use an LLM to intelligently select relevant tools before calling the main model.
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import LLMToolSelectorMiddleware
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -949,6 +959,7 @@ Automatically retry failed tool calls with configurable exponential backoff.
 from langchain.agents import create_agent
 from langchain.agents.middleware import ToolRetryMiddleware
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[search_tool, database_tool],
@@ -1022,6 +1033,7 @@ Emulate tool execution using an LLM for testing purposes, replacing actual tool 
 from langchain.agents import create_agent
 from langchain.agents.middleware import LLMToolEmulator
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[get_weather, search_database, send_email],
@@ -1067,6 +1079,7 @@ Manage conversation context by trimming, summarizing, or clearing tool uses.
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import ContextEditingMiddleware, ClearToolUsesEdit
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -1173,6 +1186,7 @@ from langchain.messages import AIMessage
 from langchain.agents import create_agent
 from langgraph.runtime import Runtime
 from typing import Any, Callable
+
 
 # Node-style: logging before model calls
 @before_model
@@ -1837,6 +1851,7 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import AgentMiddleware, ModelRequest
 from typing import Callable
 
+
 class ToolSelectorMiddleware(AgentMiddleware):
     def wrap_model_call(
         self,
@@ -1891,6 +1906,7 @@ from typing import Literal, Callable
 from langchain.agents import create_agent
 from langchain.agents.middleware import AgentMiddleware, ModelRequest, ModelResponse
 from langchain_core.tools import tool
+
 
 @tool
 def github_create_issue(repo: str, title: str) -> dict:

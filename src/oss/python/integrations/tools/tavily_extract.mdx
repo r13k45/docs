@@ -130,6 +130,7 @@ model = init_chat_model(model="gpt-4o", model_provider="openai", temperature=0)
 from langchain_tavily import TavilyExtract
 from langchain.agents import create_agent
 
+
 tavily_search_tool = TavilyExtract()
 
 agent = create_agent(model, [tavily_search_tool])

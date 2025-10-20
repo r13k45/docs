@@ -45,6 +45,7 @@ from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain.tools import Tool
 from langchain.agents import create_agent
 
+
 os.environ["OPENAI_API_KEY"] = "[your openai key]"
 
 model = init_chat_model("gpt-4o-mini", model_provider="openai", temperature=0)

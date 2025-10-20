@@ -68,6 +68,7 @@ The PII middleware supports multiple strategies for handling detected PII:
 from langchain.agents import create_agent
 from langchain.agents.middleware import PIIMiddleware
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[customer_service_tool, email_tool],
@@ -190,6 +191,7 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import HumanInTheLoopMiddleware
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -320,6 +322,7 @@ class ContentFilterMiddleware(AgentMiddleware):
 # Use the custom guardrail
 from langchain.agents import create_agent
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[search_tool, calculator_tool],
@@ -373,6 +376,7 @@ def content_filter(state: AgentState, runtime: Runtime) -> dict[str, Any] | None
 
 # Use the custom guardrail
 from langchain.agents import create_agent
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -503,6 +507,7 @@ class SafetyGuardrailMiddleware(AgentMiddleware):
 # Use the safety guardrail
 from langchain.agents import create_agent
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[search_tool, calculator_tool],
@@ -555,6 +560,7 @@ def safety_guardrail(state: AgentState, runtime: Runtime) -> dict[str, Any] | No
 
 # Use the safety guardrail
 from langchain.agents import create_agent
+
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -640,6 +646,7 @@ You can stack multiple guardrails by adding them to the middleware array. They e
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import PIIMiddleware, HumanInTheLoopMiddleware
+
 
 agent = create_agent(
     model="openai:gpt-4o",

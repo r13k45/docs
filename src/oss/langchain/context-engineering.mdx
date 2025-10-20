@@ -107,6 +107,7 @@ For fixed instructions that don't change, use the @[`system_prompt`] parameter:
 ```python
 from langchain.agents import create_agent
 
+
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[...],
@@ -136,6 +137,7 @@ For instructions that depend on context (user profile, preferences, session data
 from dataclasses import dataclass
 from langchain.agents import create_agent
 from langchain.agents.middleware import dynamic_prompt, ModelRequest
+
 
 @dataclass
 class Context:
@@ -237,6 +239,7 @@ from langchain.messages import RemoveMessage
 from langgraph.graph.message import REMOVE_ALL_MESSAGES
 from langgraph.runtime import Runtime
 
+
 @before_model
 def trim_messages(state: AgentState, runtime: Runtime) -> dict | None:
     """Keep only the most recent messages to stay within context window."""
@@ -309,6 +312,7 @@ from dataclasses import dataclass
 from langchain.tools import tool, ToolRuntime
 from langchain.agents import create_agent
 
+
 @dataclass
 class Context:
     user_id: str
@@ -353,6 +357,7 @@ Control which tools the agent can access based on context, state, or user permis
 from langchain.agents import create_agent
 from langchain.agents.middleware import wrap_model_call, ModelRequest, ModelResponse
 from typing import Callable
+
 
 @wrap_model_call
 def permission_based_tools(
@@ -420,6 +425,7 @@ from langchain.agents import create_agent
 from langchain.agents.middleware import wrap_model_call, ModelRequest, ModelResponse
 from langchain.chat_models import init_chat_model
 from typing import Callable
+
 
 @wrap_model_call
 def adaptive_model(

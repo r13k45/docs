@@ -95,6 +95,7 @@ model = init_chat_model(model="gpt-4o", model_provider="openai", temperature=0)
 from langchain_valyu import ValyuSearchTool
 from langchain.agents import create_agent
 
+
 valyu_search_tool = ValyuSearchTool()
 
 agent = create_agent(model, [valyu_search_tool])

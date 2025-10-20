@@ -111,6 +111,7 @@ We can use our tool in an agent. For this we will need a model with tool-calling
 # pip install -qU "langchain[anthropic]" to call the model
 from langchain.agents import create_agent
 
+
 tools = [tool]
 agent = create_agent(
     model="anthropic:claude-sonnet-4-5",
