@@ -216,13 +216,16 @@ The first time you configure a thread level evaluator, you’ll define the idle 
 <Tip>
 When first testing your evaluator, use a short idle time so you can see results quickly. Once validated, increase it to match the expected length of user interactions.
 </Tip>
-6. **Configure your LLM-as-a-judge prompt.**<br />
+6. **Configure your model.**<br />
+Select the provider and model you want to use for your evaluator. Threads tend to get long, so you should use a model with a higher context window in order to avoid running into limits. For example, OpenAI's GPT-4.1 mini or Gemini 2.5 Flash are good options as they both have 1M+ token context windows.
+
+7. **Configure your LLM-as-a-judge prompt.**<br />
 Define what you want to evaluate. This prompt will be used to evaluate the thread. You can also configure which parts of the `messages` list are passed to the evaluator to control the content it receives:
     - All messages: Send the full message list.
     - Human and AI pairs: Send only user and assistant messages (excluding system messages, tool calls, etc.).
     - First human and last AI: Send only the first user message and the last assistant reply.
 
-7. **Set up your feedback configuration**.<br />
+9. **Set up your feedback configuration**.<br />
 Configure a name for the feedback key, the format for the feedback you want to collect and optionally enable reasoning on the feedback.
 
 <Warning>
