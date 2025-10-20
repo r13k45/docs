@@ -3,9 +3,9 @@ title: Long-term memory
 description: Learn how to extend deep agents with persistent memory across threads
 ---
 
-Deep agents come with a local filesystem to offload memory to. This filesystem is stored in state, and is therefore **transient to a single thread**—files are lost when the conversation ends.
+Deep agents come with a local filesystem to offload memory. This filesystem is stored in state and is therefore **transient to a single thread**—files are lost when the conversation ends.
 
-You can extend deep agents with **long-term memory** by providing a LangGraph `Store` and setting `use_longterm_memory=True`. This enables persistent storage that survives across different threads and conversations.
+You can extend deep agents with **long-term memory** by providing a LangGraph `Store` and setting `use_longterm_memory=True`. This enables persistent storage that survives across threads and conversations.
 
 ## Setup
 
@@ -32,17 +32,17 @@ agent = create_deep_agent(
 
 When long-term memory is enabled, deep agents maintain **two separate filesystems**:
 
-### 1. Short-term (Transient) Filesystem
+### 1. Short-term (transient) filesystem
 - Stored in the agent's state
 - Persists only within a single thread
 - Files are lost when the thread ends
-- Accessed via standard paths: `/notes.txt`
+- Accessed through standard paths: `/notes.txt`
 
-### 2. Long-term (Persistent) Filesystem
+### 2. Long-term (persistent) filesystem
 - Stored in a LangGraph Store
 - Persists across all threads and conversations
 - Files survive indefinitely
-- Accessed via the special prefix: `/memories/notes.txt`
+- Accessed through the special prefix: `/memories/notes.txt`
 
 ## The /memories/ path convention
 
@@ -103,7 +103,7 @@ agent.invoke({
 
 ## Use cases
 
-### 1. User Preferences
+### 1. User preferences
 
 Store user preferences that persist across sessions:
 
@@ -124,7 +124,7 @@ agent = create_deep_agent(
 ```
 :::
 
-### 2. Self-Improving Instructions
+### 2. Self-improving instructions
 
 An agent can update its own instructions based on feedback:
 
@@ -152,7 +152,7 @@ agent = create_deep_agent(
 
 Over time, the instructions file accumulates user preferences, helping the agent improve.
 
-### 3. Knowledge Base
+### 3. Knowledge base
 
 Build up knowledge over multiple conversations:
 
@@ -177,7 +177,7 @@ agent.invoke({
 ```
 :::
 
-### 4. Research Projects
+### 4. Research projects
 
 Maintain research state across sessions:
 
@@ -208,7 +208,7 @@ research_agent = create_deep_agent(
 
 Any LangGraph `BaseStore` implementation works:
 
-### InMemoryStore (Development)
+### InMemoryStore (development)
 
 Good for testing and development, but data is lost on restart:
 
@@ -227,9 +227,9 @@ agent = create_deep_agent(store=store, use_longterm_memory=True)
 ```
 :::
 
-### PostgresStore (Production)
+### PostgresStore (production)
 
-For production use, use a persistent store:
+For production, use a persistent store:
 
 :::python
 ```python
@@ -290,7 +290,7 @@ Always use /memories/ for information that should survive beyond this conversati
 ```
 :::
 
-### Isolate by assistant ID
+### Isolate storage by assistant ID
 
 For multi-tenant applications, provide an `assistant_id` to isolate storage:
 
@@ -366,9 +366,9 @@ agent = create_deep_agent(
 ```
 :::
 
-### Agent must use correct paths
+### Agents must use correct paths
 
-The agent must learn to use the `/memories/` prefix for persistence. The system prompt teaches this, but the agent must follow instructions.
+The agent must learn to use the `/memories/` prefix for persistence. The system prompt teaches this, but the agent must follow the instructions.
 
 ### No automatic cleanup
 

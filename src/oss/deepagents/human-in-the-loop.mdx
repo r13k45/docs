@@ -9,9 +9,9 @@ Some tool operations may be sensitive and require human approval before executio
 
 The `interrupt_on` parameter accepts a dictionary mapping tool names to interrupt configurations. Each tool can be configured with:
 
-- **`True`** - Enable interrupts with default behavior (approve, edit, reject allowed)
-- **`False`** - Disable interrupts for this tool
-- **`{"allowed_decisions": [...]}`** - Custom configuration with specific allowed decisions
+- **`True`**: Enable interrupts with default behavior (approve, edit, reject allowed)
+- **`False`**: Disable interrupts for this tool
+- **`{"allowed_decisions": [...]}`**: Custom configuration with specific allowed decisions
 
 :::python
 ```python
@@ -60,9 +60,9 @@ agent = create_deep_agent(
 
 The `allowed_decisions` list controls what actions a human can take when reviewing a tool call:
 
-- **`"approve"`** - Execute the tool with the original arguments as proposed by the agent
-- **`"edit"`** - Modify the tool arguments before execution
-- **`"reject"`** - Skip executing this tool call entirely
+- **`"approve"`**: Execute the tool with the original arguments as proposed by the agent
+- **`"edit"`**: Modify the tool arguments before execution
+- **`"reject"`**: Skip executing this tool call entirely
 
 You can customize which decisions are available for each tool:
 
@@ -87,9 +87,9 @@ interrupt_on = {
 ```
 :::
 
-## Handling interrupts
+## Handle interrupts
 
-When an interrupt is triggered, the agent pauses execution and returns control. You must check for interrupts in the result and handle them accordingly.
+When an interrupt is triggered, the agent pauses execution and returns control. Check for interrupts in the result and handle them accordingly.
 
 :::python
 ```python
@@ -180,7 +180,7 @@ if result.get("__interrupt__"):
 ```
 :::
 
-## Editing tool arguments
+## Edit tool arguments
 
 When `"edit"` is in the allowed decisions, you can modify the tool arguments before execution:
 
@@ -305,7 +305,7 @@ if result.get("__interrupt__"):
 ```
 :::
 
-### Tailor configurations by risk level
+### Tailor configurations by risk
 
 Configure different tools based on their risk level:
 
