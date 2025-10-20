@@ -20,13 +20,10 @@ The examples on this page use the `traceable` decorator/wrapper to log the model
 
 ## Messages Format
 
-When tracing a custom model or a custom input/output format, it must either follow the LangChain formats, OpenAI completions format or Anthropic messages format. For more details,  refer to the [OpenAI Chat Completions](https://platform.openai.com/docs/api-reference/chat/create) or [Anthropic Messages](https://docs.claude.com/en/api/messages) documentation. The LangChain formats are:
+When tracing a custom model or a custom input/output format, it must either follow the LangChain format, OpenAI completions format or Anthropic messages format. For more details,  refer to the [OpenAI Chat Completions](https://platform.openai.com/docs/api-reference/chat/create) or [Anthropic Messages](https://docs.claude.com/en/api/messages) documentation. The LangChain format is:
 
 
-<Tabs>
-  <Tab title="LangChain v1 format">
-
- <Expandable title="LangChain v1 format">
+ <Expandable title="LangChain format">
 
 <ParamField path="messages" type="array" required>
   A list of messages containing the content of the conversation.
@@ -142,7 +139,7 @@ When tracing a custom model or a custom input/output format, it must either foll
         </Expandable>
 
         <Expandable title="server_tool_call">
-          <ParamField path="type" type="literal('tool_call')" required />
+          <ParamField path="type" type="literal('server_tool_call')" required />
           <ParamField path="id" type="string" required >
             Unique identifier for this tool call.
           </ParamField>
@@ -158,9 +155,6 @@ When tracing a custom model or a custom input/output format, it must either foll
           <ParamField path="type" type="literal('server_tool_result')" required />
           <ParamField path="tool_call_id" type="string" required>
             Identifier of the corresponding server tool call.
-          </ParamField>
-          <ParamField path="args" type="object" required>
-            Arguments to pass to the tool.
           </ParamField>
           <ParamField path="id" type="string">
             Unique identifier for this tool call.
@@ -182,7 +176,7 @@ When tracing a custom model or a custom input/output format, it must either foll
     </ParamField>
 
     <ParamField path="usage_metadata" type="object">
-    Use this field to send token counts and or costs with your model's output. See [this guide](/langsmith/log-llm-trace#provide-token-and-cost-information) for more details.
+    Use this field to send token counts and/or costs with your model's output. See [this guide](/langsmith/log-llm-trace#provide-token-and-cost-information) for more details.
     </ParamField>
 </ParamField>
 
@@ -192,7 +186,7 @@ When tracing a custom model or a custom input/output format, it must either foll
 ### Examples
 <CodeGroup>
 
-```python Text input and output
+```python Text and reasoning
  inputs = {
   "messages": [
     {
@@ -304,250 +298,52 @@ outputs = {
   ]
 }
 ```
-</CodeGroup>
 
-
-  </Tab>
-    <Tab title="LangChain v0 Format">
-    <Expandable title="LangChain v0 format">
-
-<ParamField path="messages" type="array" required>
-  A list of messages containing the content of the conversation.
-
-    <ParamField path="role" type="string" required>
-  Identifies the message type. One of: <code>system</code> | <code>user</code> | <code>assistant</code> | <code>tool</code>
-</ParamField>
-
-    <ParamField path="content" type="string | array" required>
-      Content of the message. Either a string or an array of structured parts. May be an empty string if `tool_calls` is present.
-
-      <Expandable title="Content options">
-        <ParamField path="type" type="string" required>
-          One of: <code>text</code> | <code>image</code> | <code>file</code> | <code>audio</code>
-        </ParamField>
-
-        <Expandable title="text">
-          <ParamField path="type" type="literal('text')" required />
-          <ParamField path="text" type="string" required>
-            Text content.
-          </ParamField>
-        </Expandable>
-
-        <Expandable title="image">
-          <ParamField path="type" type="literal('image')" required />
-          <ParamField path="source_type" type="string" required>
-            One of: <code>base64</code> or <code>url</code>.
-          </ParamField>
-          <ParamField path="data" type="string">
-            Base64-encoded image bytes. Required when <code>source_type</code> is <code>base64</code>.
-          </ParamField>
-          <ParamField path="url" type="string">
-            URL. Required when <code>source_type</code> is <code>url</code>.
-          </ParamField>
-          <ParamField path="mime_type" type="string">
-            MIME type (e.g., <code>image/jpeg</code>). Recommended for <code>base64</code>.
-          </ParamField>
-        </Expandable>
-
-        <Expandable title="file (e.g., PDFs)">
-          <ParamField path="type" type="literal('file')" required />
-          <ParamField path="source_type" type="string" required>
-            One of: <code>base64</code> or <code>url</code>.
-          </ParamField>
-          <ParamField path="data" type="string">
-            Base64-encoded file bytes. Required when <code>source_type</code> is <code>base64</code>.
-          </ParamField>
-          <ParamField path="url" type="string">
-            Public URL. Required when <code>source_type</code> is <code>url</code>.
-          </ParamField>
-          <ParamField path="mime_type" type="string" required>
-            MIME type (e.g., <code>application/pdf</code>).
-          </ParamField>
-        </Expandable>
-
-        <Expandable title="audio">
-          <ParamField path="type" type="literal('audio')" required />
-          <ParamField path="source_type" type="string" required>
-            One of: <code>base64</code> or <code>url</code>.
-          </ParamField>
-          <ParamField path="data" type="string">
-            Base64-encoded audio bytes. Required when <code>source_type</code> is <code>base64</code>.
-          </ParamField>
-          <ParamField path="url" type="string">
-            Public URL. Required when <code>source_type</code> is <code>url</code>.
-          </ParamField>
-          <ParamField path="mime_type" type="string" required>
-            MIME type (e.g., <code>audio/wav</code>).
-          </ParamField>
-        </Expandable>
-      </Expandable>
-    </ParamField>
-
-
-    <ParamField path="tool_calls" type="array">
-      Tools requested by the assistant. Only valid when <code>role</code> is <code>assistant</code>.
-      <Expandable title="tool call object">
-        <ParamField path="id" type="string" required>
-          Unique identifier to correlate with tool results.
-        </ParamField>
-        <ParamField path="type" type="literal('function')" required>
-          The tool call type (currently only <code>function</code>).
-        </ParamField>
-        <ParamField path="function" type="object" required>
-          Name of the tool/function.
-            <Expandable title="options">
-                <ParamField path="name" type="string" required />
-                <ParamField path="arguments" type="string" required>
-                JSON-encoded string of arguments (e.g., <code>{"{"}"city":"SF"{"}"}</code>).
-                </ParamField>
-
-            </Expandable>
-        </ParamField>
-
-      </Expandable>
-    </ParamField>
-
-    <ParamField path="tool_call_id" type="string">
-    Must match the <code>id</code> of a prior <code>assistant</code> message’s <code>tool_calls[i]</code> entry. Only valid when <code>role</code> is <code>tool</code>.
-    </ParamField>
-
-    <ParamField path="usage_metadata" type="object">
-    Use this field to send token counts and or costs with your model's output. See [this guide](/langsmith/log-llm-trace#provide-token-and-cost-information) for more details.
-    </ParamField>
-</ParamField>
-
-</Expandable>
-
- ### Examples
-
-  <CodeGroup>
-
-```python Text input and output
- inputs = {
+```python Server-side tool calls
+input = {
   "messages": [
     {
-      "role": "user",
+      "type": "human",
       "content": [
         {
           "type": "text",
-          "text": "Hi, can you tell me the capital of France?"
+          "text": "What is the price of AAPL?"
         }
       ]
     }
   ]
 }
 
-outputs = {
+output = {
   "messages": [
     {
-      "role": "assistant",
+      "type": "assistant",
       "content": [
         {
-          "type": "text",
-          "text": "The capital of France is Paris."
-        }
-      ]
-    }
-  ]
-}
-
-```
-
-```python Tool calls
-inputs = {
-  "messages": [
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "text",
-          "text": "What's the weather in San Francisco?"
-        }
-      ]
-    }
-  ]
-}
-
-outputs = {
-  "messages": [
-    {
-      "role": "assistant",
-      "content": "",
-      "tool_calls": [
-        {
-          "id": "call_1",
-          "type": "function",
-          "function": {
-            "name": "get_weather",
-            "arguments": "{\"city\": \"San Francisco\"}"
-          }
-        }
-      ]
-    },
-    {
-      "role": "tool",
-      "tool_call_id": "call_1",
-      "content": [
-        {
-          "type": "text",
-          "text": "{\"temperature\": \"18°C\", \"condition\": \"Sunny\"}"
-        }
-      ]
-    },
-    {
-      "role": "assistant",
-      "content": [
-        {
-          "type": "text",
-          "text": "The weather in San Francisco is 18°C and sunny."
-        }
-      ]
-    }
-  ]
-}
-```
-
-```python Multimodal
-inputs = {
-  "messages": [
-    {
-      "role": "user",
-      "content": [
-        {
-          "type": "text",
-          "text": "What breed is this dog?"
+          "type": "server_tool_call",
+          "name": "web_search",
+          "args": {
+            "query": "price of AAPL",
+            "type": "search"
+          },
+          "id": "call_1"
         },
         {
-          "type": "image",
-          "source_type": "url",
-          "url": "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U",
-          "mime_type": "image/jpeg"
-        }
-      ]
-    }
-  ]
-}
-
-outputs = {
-  "messages": [
-    {
-      "role": "assistant",
-      "content": [
+          "type": "server_tool_result",
+          "tool_call_id": "call_1",
+          "status": "success"
+        },
         {
           "type": "text",
-          "text": "This looks like a Black Labrador."
+          "text": "The price of AAPL is $150.00"
         }
       ]
     }
   ]
 }
 ```
+
 </CodeGroup>
-  </Tab>
-</Tabs>
-
-
-
 
 
 ## Converting custom I/O formats into LangSmith compatible formats
