@@ -110,9 +110,13 @@ if result.get("__interrupt__"):
     interrupts = result["__interrupt__"][0].value
     action_requests = interrupts["action_requests"]
     review_configs = interrupts["review_configs"]
-    
+
+    # Create a lookup map from tool name to review config
+    config_map = {cfg["action_name"]: cfg for cfg in review_configs}
+
     # Display the pending actions to the user
-    for action, review_config in zip(action_requests, review_configs):
+    for action in action_requests:
+        review_config = config_map[action["name"]]
         print(f"Tool: {action['name']}")
         print(f"Arguments: {action['args']}")
         print(f"Allowed decisions: {review_config['allowed_decisions']}")
@@ -189,16 +193,19 @@ When `"edit"` is in the allowed decisions, you can modify the tool arguments bef
 if result.get("__interrupt__"):
     interrupts = result["__interrupt__"][0].value
     action_request = interrupts["action_requests"][0]
-    
+
     # Original args from the agent
     print(action_request["args"])  # {"to": "everyone@company.com", ...}
-    
+
     # User decides to edit the recipient
     decisions = [{
         "type": "edit",
-        "args": {"to": "team@company.com", "subject": "...", "body": "..."}
+        "edited_action": {
+            "name": action_request["name"],  # Must include the tool name
+            "args": {"to": "team@company.com", "subject": "...", "body": "..."}
+        }
     }]
-    
+
     result = agent.invoke(
         Command(resume={"decisions": decisions}),
         config=config
