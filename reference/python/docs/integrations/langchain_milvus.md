@@ -11,4 +11,3 @@ title: Milvus - LangChain Integration Reference
 !!! note
     This package ref has not yet been fully migrated to v1.
 
-This package ref has not yet been migrated to v1.
