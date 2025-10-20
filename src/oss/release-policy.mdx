@@ -76,6 +76,39 @@ This page explains the LangChain and LangGraph release policies. Click on the ta
 
     In some situations, we may allow the feature to remain in the code base for longer periods of time, if it's not causing issues in the packages, to reduce the burden on users.
 
+    ## Long-term support (LTS)
+
+    LangChain follows a long-term support (LTS) policy to provide stability for production applications:
+
+    ### Release status definitions
+
+    Packages are marked with one of the following statuses:
+    - **ACTIVE**: Current active development, includes bug fixes, security patches, and new features
+    - **MAINTENANCE**: Receives all security patches and critical bug fixes, but no new features
+
+    ### Current LTS releases
+
+    **LangChain 1.0** is designated as an LTS release:
+    - **Status**: ACTIVE until the release of 2.0
+    - **Support period**: After 2.0 is released, 1.0 will enter MAINTENANCE mode for at least 1 year
+    - **Semver compliance**: Users can upgrade between minor versions (e.g., 1.0 to 1.1) without breaking changes
+
+    ### Legacy version support
+
+    **LangChain 0.3**:
+    - **Status**: MAINTENANCE mode
+    - **Support period**: Until December 2026
+    - **Support includes**: All security patches and critical bug fixes
+
+    ### Special considerations
+
+    :::python
+    **langchain-community 0.4**: Due to the nature of community contributions and third-party integrations, `langchain-community` may have breaking changes on minor releases. It has been released as version 0.4 to reflect this different stability policy.
+    :::
+    :::js
+    **@langchain/community 0.4**: Due to the nature of community contributions and third-party integrations, `@langchain/community` may have breaking changes on minor releases. It has been released as version 0.4 to reflect this different stability policy.
+    :::
+
     </Tab>
     <Tab title="LangGraph">
     LangGraph follows a structured release policy to ensure stability and predictability for users building production applications.
@@ -159,10 +192,27 @@ This page explains the LangChain and LangGraph release policies. Click on the ta
 
     ## Long-term support (LTS)
 
-    Selected versions may be designated as LTS releases:
-    - Receive security updates and critical bug fixes for extended periods
-    - Ideal for enterprise deployments requiring maximum stability
-    - LTS status is announced at release time
+    LangGraph follows a long-term support (LTS) policy to provide stability for production applications:
+
+    ### Release status definitions
+
+    Packages are marked with one of the following statuses:
+    - **ACTIVE**: Current active development, includes bug fixes, security patches, and new features
+    - **MAINTENANCE**: Receives all security patches and critical bug fixes, but no new features
+
+    ### Current LTS releases
+
+    **LangGraph 1.0** is designated as an LTS release:
+    - **Status**: ACTIVE until the release of 2.0
+    - **Support period**: After 2.0 is released, 1.0 will enter MAINTENANCE mode for at least 1 year
+    - **Semver compliance**: Users can upgrade between minor versions (e.g., 1.0 to 1.1) without breaking changes
+
+    ### Legacy version support
+
+    **LangGraph 0.4**:
+    - **Status**: MAINTENANCE mode
+    - **Support period**: Until December 2026
+    - **Support includes**: All security patches and critical bug fixes
 
     ## See also
 
