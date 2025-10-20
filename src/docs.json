@@ -988,7 +988,8 @@
                       "langsmith/llm-as-judge",
                       "langsmith/composite-evaluators",
                       "langsmith/summary",
-                      "langsmith/evaluate-pairwise"
+                      "langsmith/evaluate-pairwise",
+                      "langsmith/trajectory-evals"
                     ]
                   },
                   {
