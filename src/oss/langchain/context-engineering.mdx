@@ -55,15 +55,15 @@ To build reliable agents, you need to control what happens at each step of the a
 
 | Context Type | What You Control | Transient or Persistent |
 |--------------|------------------|-------------------------|
-| **[Model Context](#model-context)** | What goes into model calls (instructions, message history, tools, response format) | **Transient** - affects this call only |
-| **[Tool Context](#tool-context)** | What tools can access and produce (reads/writes to state, store, runtime context) | **Persistent** - tools update state/store |
-| **[Life-cycle Context](#life-cycle-context)** | What happens between steps (summarization, guardrails, logging) | **Persistent** - modifies what gets saved |
+| **[Model Context](#model-context)** | What goes into model calls (instructions, message history, tools, response format) | Transient |
+| **[Tool Context](#tool-context)** | What tools can access and produce (reads/writes to state, store, runtime context) | Persistent |
+| **[Life-cycle Context](#life-cycle-context)** | What happens between steps (summarization, guardrails, logging) | Persistent |
 
 <CardGroup>
-  <Card title="Transient context">
+  <Card title="Transient context" icon="bolt" iconType="duotone">
     What the LLM sees for a single call. You can modify messages, tools, or prompts without changing what's saved in state.
   </Card>
-  <Card title="Persistent context">
+  <Card title="Persistent context" icon="database" iconType="duotone">
     What gets saved in state across turns. Life-cycle hooks and tool writes modify this permanently.
   </Card>
 </CardGroup>
@@ -80,9 +80,15 @@ Throughout this process, your agent accesses (reads / writes) different sources 
 
 ### How it works
 
-LangChain [middleware](/oss/langchain/middleware) is the mechanism that makes context engineering practical. It intercepts and transforms context at every step of the agent loop - adjusting prompts, filtering tools, managing conversation history, and controlling what gets persisted to state.
+LangChain [middleware](/oss/langchain/middleware) is the mechanism under the hood that makes context engineering practical for developers using LangChain.
 
-Throughout this guide, you'll see middleware examples for implementing context engineering patterns.
+Middleware allows you to hook into any step in the agent lifecycle and:
+
+1. Read context
+2. Write context
+3. Jump to a different step in the agent lifecycle
+
+Throughout this guide, you'll see frequent use of the middleware API as a means to the context engineering end.
 
 ## Model Context
 
