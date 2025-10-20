@@ -5,7 +5,7 @@ sidebarTitle: Concepts
 
 This page covers key concepts that are important to understand when logging traces to LangSmith.
 
-A [_trace_](#traces) records the sequence of steps your application takes—from receiving an input, through intermediate processing, to producing a final output. Each step within a trace is represented by a [_run_](#runs). Multiple traces are grouped together within a [_project_](#projects).
+A [_trace_](#traces) records the sequence of steps your application takes—from receiving an input, through intermediate processing, to producing a final output. Each step within a trace is represented by a [_run_](#runs). Multiple traces are grouped together within a [_project_](#projects), and traces from multi-turn conversations can be linked together as a [_thread_](#threads).
 
 The following diagram displays these concepts in the context of a simple RAG app, which retrieves documents from an index and generates an answer.
 
@@ -40,6 +40,26 @@ A _trace_ is a collection of runs for a single operation. For example, if you ha
 A _project_ is a collection of traces. You can think of a project as a container for all the traces that are related to a single application or service. You can have multiple projects, and each project can have multiple traces.
 
 ![Project](/langsmith/images/project.png)
+
+## Threads
+
+A _thread_ is a sequence of traces representing a single conversation. Many LLM applications have a chatbot-like interface in which the user and the LLM application engage in a multi-turn conversation. Each response is represented as its own trace, but these traces are linked together by being part of the same thread.
+
+To group traces into threads, you pass a special metadata key (`session_id`, `thread_id`, or `conversation_id`) with a unique identifier value that links the traces together.
+
+[Learn how to configure threads](/langsmith/threads).
+
+<img
+    className="block dark:hidden"
+    src="/langsmith/images/thread-overview-light.png"
+    alt="Thread representing a sequence of traces in a multi-turn conversation."
+/>
+
+<img
+    className="hidden dark:block"
+    src="/langsmith/images/thread-overview-dark.png"
+    alt="Thread representing a sequence of traces in a multi-turn conversation."
+/>
 
 ## Feedback
 
