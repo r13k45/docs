@@ -184,7 +184,7 @@ Dynamically configure the system prompt based on conversation state, user prefer
 
     :::js
     ```typescript
-    import { createAgent, dynamicSystemPromptMiddleware } from "langchain";
+    import { createAgent } from "langchain";
 
     const agent = createAgent({
       model: "openai:gpt-4o",
@@ -256,13 +256,15 @@ Dynamically configure the system prompt based on conversation state, user prefer
     const contextSchema = z.object({
       userId: z.string(),
     });
+    
+    type Context = z.infer<typeof contextSchema>;
 
     const agent = createAgent({
       model: "openai:gpt-4o",
       tools: [...],
       contextSchema,
       middleware: [
-        dynamicSystemPromptMiddleware(async (state, runtime) => {
+        dynamicSystemPromptMiddleware<Context>(async (state, runtime) => {
           const userId = runtime.context.userId;
 
           // Read from Store: get user preferences
@@ -334,13 +336,15 @@ Dynamically configure the system prompt based on conversation state, user prefer
       userRole: z.string(),
       deploymentEnv: z.string(),
     });
+    
+    type Context = z.infer<typeof contextSchema>;
 
     const agent = createAgent({
       model: "openai:gpt-4o",
       tools: [...],
       contextSchema,
       middleware: [
-        dynamicSystemPromptMiddleware((state, runtime) => {
+        dynamicSystemPromptMiddleware<Context>((state, runtime) => {
           // Read from Runtime Context: user role and environment
           const userRole = runtime.context.userRole;
           const env = runtime.context.deploymentEnv;
@@ -586,8 +590,10 @@ Manage conversation history by trimming, summarizing, or filtering messages befo
       maxMessages: z.number(),
       userTier: z.string(),
     });
+    
+    type Context = z.infer<typeof contextSchema>;
 
-    const contextBasedTrimming = createMiddleware({
+    const contextBasedTrimming = createMiddleware<Context>({
       name: "ContextBasedTrimming",
       beforeModel: (state, runtime) => {
         // Read from Runtime Context: get user's message limit
@@ -749,6 +755,7 @@ Dynamically select which tools are available to the agent based on context like 
 
     const storeBasedTools = createMiddleware({
       name: "StoreBasedTools",
+      contextSchema,
       wrapModelCall: async (request, handler) => {
         const userId = request.runtime.context.userId;
 
@@ -825,9 +832,10 @@ Dynamically select which tools are available to the agent based on context like 
 
     const contextBasedTools = createMiddleware({
       name: "ContextBasedTools",
+      contextSchema,
       wrapModelCall: (request, handler) => {
         // Read from Runtime Context: get user role
-        const userRole = runtime.context.userRole;
+        const userRole = request.runtime.context.userRole;
 
         let filteredTools = request.tools;
 
@@ -999,11 +1007,12 @@ Switch between different models dynamically based on conversation length, user p
 
     const storeBasedModel = createMiddleware({
       name: "StoreBasedModel",
+      contextSchema,
       wrapModelCall: async (request, handler) => {
         const userId = request.runtime.context.userId;
 
         // Read from Store: get user's preferred model
-        const store = runtime.store;
+        const store = request.runtime.store;
         const userPrefs = await store.get(["preferences"], userId);
 
         let model = request.model;
@@ -1091,6 +1100,7 @@ Switch between different models dynamically based on conversation length, user p
 
     const contextBasedModel = createMiddleware({
       name: "ContextBasedModel",
+      contextSchema,
       wrapModelCall: (request, handler) => {
         // Read from Runtime Context: cost tier and environment
         const costTier = request.runtime.context.costTier;
