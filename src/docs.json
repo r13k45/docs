@@ -798,8 +798,13 @@
                   "langsmith/langgraph-python-sdk",
                   "langsmith/langgraph-js-ts-sdk",
                   "langsmith/smith-api-ref",
-                  "langsmith/server-api-ref",
-                  "langsmith/api-ref-control-plane"
+                  {
+                    "group": "API reference for LangSmith Deployment",
+                    "pages": [
+                      "langsmith/server-api-ref",
+                      "langsmith/api-ref-control-plane"
+                    ]
+                  }
                 ]
               },
               {
