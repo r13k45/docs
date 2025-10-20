@@ -34,10 +34,10 @@ New to context engineering? Start with the [conceptual overview](/oss/concepts/c
 
 ### Understanding the agent loop
 
-A typical agent consists of two nodes running in a loop:
+A typical agent loop consists of two steps:
 
-1. **Model node** - calls the LLM, and either returns the response or routes to the tool node
-2. **Tool node** - executes the tools that the LLM requested
+1. **Model call** - calls the LLM, and either returns the response or routes to tool execution
+2. **Tool execution** - executes the tools that the LLM requested
 
 <div style={{ display: "flex", justifyContent: "center" }}>
   <img
@@ -49,15 +49,15 @@ A typical agent consists of two nodes running in a loop:
 
 This loop continues until the LLM decides to finish.
 
-[Middleware](/oss/langchain/middleware) provides additional hooks that run **between** these nodes, allowing you to modify context as it flows through the agent loop. For example, you can automatically summarize long conversations or redact sensitive information before messages are sent to the LLM.
+[Middleware](/oss/langchain/middleware) provides additional hooks that run **between** these steps, allowing you to modify context as it flows through the agent loop. This enables persisting changes to messages, or other context, between the model call and tool execution.
 
-<div style={{ display: "flex", justifyContent: "center" }}>
-  <img
-    src="/oss/images/middleware_final.png"
-    alt="Middleware hooks in the agent loop"
-    className="rounded-lg"
-  />
-</div>
+To have full control over your agent, you need to control what happens at each step and between them:
+
+| Context Type | What You Control | Examples |
+|--------------|------------------|----------|
+| **[Model Context](#model-context)** | What goes into the model call | System prompt, messages, tools, model selection, response format |
+| **[Tool Context](#tool-context)** | What happens inside tool execution | Reading from and writing to state, store, and runtime context |
+| **[In-Between Context](#in-between-context)** | What happens between these steps | Summarize conversations, redact PII, modify context flow |
 
 Throughout this process, the agent may access different sources of data:
 
@@ -67,27 +67,11 @@ Throughout this process, the agent may access different sources of data:
 | **Store** | Long-term memory | Cross-conversation | User preferences, extracted insights, memories, historical data |
 | **Runtime Context** | Static configuration | Conversation-scoped | User ID, API keys, database connections, permissions |
 
-To have full control over your agent, you need to control what happens in each node and between them:
-
-<CardGroup cols={3}>
-  <Card title="Model Context" icon="microchip" href="#model-context">
-    Control what the LLM sees: system prompt, messages, tools, model selection, and response format
-  </Card>
-
-  <Card title="Tool Context" icon="wrench" href="#tool-context">
-    Control what tools can access: reading from and writing to state, store, and runtime context
-  </Card>
-
-  <Card title="Middleware" icon="arrows-rotate" href="#middleware">
-    Control what happens between nodes: summarize conversations, redact PII, and modify context flow
-  </Card>
-</CardGroup>
-
 ## Model Context
 
-The model node is where the LLM is called. You have full control over what gets passed to the LLM at this stage.
+This is where you control what goes into the model call. You have full control over what gets passed to the LLM.
 
-**Important:** Changes made in the model node affect **transient context** - the information sent to the LLM for a single call. These modifications don't change what's saved in state (your conversation history). To modify what gets saved to state, use [middleware hooks](#middleware).
+**Important:** Changes made here affect **transient context** - the information sent to the LLM for a single call. These modifications don't change what's saved in state (your conversation history). To modify what gets saved to state, use [middleware hooks](#in-between-context).
 
 You can dynamically adjust:
 
@@ -1359,7 +1343,7 @@ Change the structured output format based on conversation stage, user preference
 
 ## Tool Context
 
-The tool node is where tools are executed after the LLM requests them. Tools are unique in that they both consume (read) context and produce (write) context that flows back to the model node.
+This is where you control what happens inside tool execution. Tools are executed after the LLM requests them. Tools are unique in that they both consume (read) context and produce (write) context that flows back to the model call.
 
 ### Reads
 
@@ -1746,9 +1730,17 @@ Tools can write to State and Store to update context and persist data across con
 
 See [Tools](/oss/langchain/tools) for comprehensive examples of accessing State, Store, and Runtime Context in tools.
 
-## Middleware
+## In-Between Context
 
-Middleware runs between nodes in the agent loop, providing hooks to modify context as it flows through your agent. Unlike the model and tool contexts which operate within their respective nodes, middleware intercepts and transforms data **between** nodes.
+This is where you control what happens between the model call and tool execution. Middleware provides hooks to modify context as it flows through your agent loop. Unlike model and tool contexts which operate within their respective steps, middleware intercepts and transforms data **between** these steps.
+
+<div style={{ display: "flex", justifyContent: "center" }}>
+  <img
+    src="/oss/images/middleware_final.png"
+    alt="Middleware hooks in the agent loop"
+    className="rounded-lg"
+  />
+</div>
 
 ### Messages
 
