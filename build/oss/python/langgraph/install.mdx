@@ -1,0 +1,53 @@
+---
+title: Install LangGraph
+sidebarTitle: Install
+---
+
+import AlphaCallout from '/snippets/alpha-lg-callout.mdx';
+
+<AlphaCallout />
+
+To install the base LangGraph package:
+
+<CodeGroup>
+```bash pip
+pip install --pre -U langgraph
+```
+
+```bash uv
+uv add --prerelease=allow langgraph
+```
+</CodeGroup>
+
+
+
+
+To use LangGraph you will usually want to access LLMs and define tools.
+You can do this however you see fit.
+
+One way to do this (which we will use in the docs) is to use [LangChain](/oss/python/langchain/overview).
+
+Install LangChain with:
+
+<CodeGroup>
+```bash pip
+pip install --pre -U langchain
+```
+
+```bash uv
+uv add --prerelease=allow langchain
+```
+</CodeGroup>
+
+
+
+
+To work with specific LLM provider packages, you will need install them separately.
+
+Refer to the [integrations](/oss/python/integrations/providers) page for provider-specific installation instructions.
+
+---
+
+<Callout icon="pen-to-square" iconType="regular">
+  [Edit the source of this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/install.mdx)
+</Callout>
