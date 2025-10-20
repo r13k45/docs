@@ -30,10 +30,10 @@ build:
 	@./install-mkdocs.sh
 	@if [ "$$VERCEL" = "1" ] && [ -n "$$MKDOCS_INSIDERS" ]; then \
 		echo "Building with Insiders plugins enabled..."; \
-		ENABLE_INSIDERS_PLUGINS=true uv run python -m mkdocs build -c -f mkdocs.yml; \
+		ENABLE_INSIDERS_PLUGINS=true uv run --no-sync python -m mkdocs build -c -f mkdocs.yml; \
 	else \
 		echo "Building without Insiders plugins..."; \
-		uv run python -m mkdocs build -c -f mkdocs.yml; \
+		uv run --no-sync python -m mkdocs build -c -f mkdocs.yml; \
 	fi
 
 # To preview what the docs will look like when built
