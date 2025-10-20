@@ -72,8 +72,8 @@ To build reliable agents, you need to control what happens at each step of the a
 
 Throughout this process, your agent accesses (reads / writes) different sources of data:
 
-| Data Source | Type | Scope | Examples |
-|-------------|------|-------|----------|
+| Data Source | Also Known As | Scope | Examples |
+|-------------|---------------|-------|----------|
 | **State** | Short-term memory | Conversation-scoped | Current messages, uploaded files, authentication status, tool results |
 | **Store** | Long-term memory | Cross-conversation | User preferences, extracted insights, memories, historical data |
 | **Runtime Context** | Static configuration | Conversation-scoped | User ID, API keys, database connections, permissions, environment settings |
@@ -94,7 +94,7 @@ Throughout this guide, you'll see frequent use of the middleware API as a means 
 
 Control what goes into each model call - instructions, available tools, which model to use, and output format. These decisions directly impact reliability and cost.
 
-<CardGroup cols={1}>
+<CardGroup cols={2}>
     <Card title="System Prompt" icon="message-lines" href="#system-prompt">
         Base instructions from the developer to the LLM.
     </Card>
@@ -112,7 +112,7 @@ Control what goes into each model call - instructions, available tools, which mo
     </Card>
 </CardGroup>
 
-All of these types of context can draw from **state** (short-term memory), **store** (long-term memory), or **runtime context** (static configuration).
+All of these types of model context can draw from **state** (short-term memory), **store** (long-term memory), or **runtime context** (static configuration).
 
 ### System Prompt
 
@@ -1778,9 +1778,9 @@ Control what happens **between** the core agent steps - intercepting data flow t
 
 [Middleware](/oss/langchain/middleware) provides hooks that run between model calls and tool execution, with three key capabilities:
 
-**1. Read context** - Access state, store, and runtime context to make decisions about what to do next
-**2. Write context** - Modify state and store to persist changes, update conversation history, or save insights
-**3. Time travel** - Jump to different steps in the agent cycle based on context (e.g., skip tool execution if a condition is met, repeat model call with modified context)
+1. **Read context** - Access state, store, and runtime context to make decisions about what to do next
+2. **Write context** - Modify state and store to persist changes, update conversation history, or save insights
+3. **Time travel** - Jump to different steps in the agent cycle based on context (e.g., skip tool execution if a condition is met, repeat model call with modified context)
 
 <div style={{ display: "flex", justifyContent: "center" }}>
   <img
