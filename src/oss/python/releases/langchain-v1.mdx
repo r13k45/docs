@@ -104,14 +104,7 @@ agent = create_agent(
 
 You can also build custom middleware to fit your needs. Middleware exposes hooks at each step in an agent's execution:
 
-<div style={{ display: "flex", justifyContent: "center" }}>
-    <img
-        src="/oss/images/middleware_final.png"
-        alt="Middleware flow diagram"
-        height="300"
-        className="rounded-lg"
-    />
-</div>
+![middleware flow](/oss/images/middleware_final.png)
 
 Build custom middleware by implementing any of these hooks on a subclass of the @[`AgentMiddleware`] class:
 
