@@ -5,7 +5,7 @@ description: Learn how to use subagents to delegate work and keep context clean
 
 Deep agents can create subagents to delegate work. You can specify custom subagents in the `subagents` parameter. Subagents are useful for [context quarantine](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html#context-quarantine) (keeping the main agent's context clean) and specialized instructions.
 
-## Why Use Subagents?
+## Why use subagents?
 
 Subagents solve the **context bloat problem**. When agents use tools with large outputs (web search, file reads, database queries), the context window fills up quickly with intermediate results. Subagents isolate this detailed work—the main agent receives only the final result, not the dozens of tool calls that produced it.
 
@@ -127,7 +127,7 @@ agent = create_deep_agent(
 ```
 :::
 
-## The General-Purpose Subagent
+## The general-purpose subagent
 
 In addition to any user-defined subagents, deep agents have access to a `general-purpose` subagent at all times. This subagent:
 - Has the same system prompt as the main agent
@@ -139,9 +139,9 @@ The general-purpose subagent is ideal for context isolation without specialized 
 
 **Example:** Instead of the main agent making 10 web searches and filling its context with results, it delegates to the general-purpose subagent: `task(name="general-purpose", task="Research quantum computing trends")`. The subagent performs all the searches internally and returns only a summary.
 
-## Best Practices
+## Best practices
 
-### Write Clear Descriptions
+### Write clear descriptions
 
 The main agent uses descriptions to decide which subagent to call. Be specific:
 
@@ -149,7 +149,7 @@ The main agent uses descriptions to decide which subagent to call. Be specific:
 
 ❌ **Bad:** `"Does finance stuff"`
 
-### Keep System Prompts Detailed
+### Keep system prompts detailed
 
 Include specific guidance on how to use tools and format outputs:
 
@@ -182,7 +182,7 @@ research_subagent = {
 ```
 :::
 
-### Minimize Tool Sets
+### Minimize tool sets
 
 Only give subagents the tools they need. This improves focus and security:
 
@@ -208,7 +208,7 @@ email_agent = {
 ```
 :::
 
-### Choose Models by Task
+### Choose models by task
 
 Different models excel at different tasks:
 
@@ -239,7 +239,7 @@ subagents = [
 ```
 :::
 
-### Return Concise Results
+### Return concise results
 
 Instruct subagents to return summaries, not raw data:
 
@@ -267,9 +267,9 @@ data_analyst = {
 ```
 :::
 
-## Common Patterns
+## Common patterns
 
-### Pattern: Multiple Specialized Subagents
+### Pattern: Multiple specialized subagents
 
 Create specialized subagents for different domains:
 
@@ -323,7 +323,7 @@ Each subagent works with clean context focused only on its task.
 
 ## Troubleshooting
 
-### Subagent Not Being Called
+### Subagent not being called
 
 **Problem:** Main agent tries to do work itself instead of delegating.
 
@@ -349,7 +349,7 @@ Each subagent works with clean context focused only on its task.
    )
    ```
 
-### Context Still Getting Bloated
+### Context still getting bloated
 
 **Problem:** Context fills up despite using subagents.
 
@@ -374,7 +374,7 @@ Each subagent works with clean context focused only on its task.
    This keeps context clean."""
    ```
 
-### Wrong Subagent Being Selected
+### Wrong subagent being selected
 
 **Problem:** Main agent calls inappropriate subagent for the task.
 
