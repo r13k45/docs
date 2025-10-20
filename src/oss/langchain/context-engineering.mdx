@@ -55,35 +55,75 @@ The agent may have access to different context throughout this loop. What ultima
 
 ### Context engineering overview
 
-**Context engineering in a nutshell:**
-- **Data Sources**: Read from State (session), Store (persistent), or Runtime Context (config)
-- **Middleware**: Intercept the agent loop to make decisions
-- **Control Knobs**: Dynamically adjust Prompt, Messages, Tools, Model, or output Format
+Context engineering is about reading from **data sources** and using **middleware** to dynamically adjust the **control knobs** of your agent:
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '16px'}}}%%
 flowchart TD
-    State[State<br/>short-term memory]
-    Store[Store<br/>long-term memory]
-    Runtime[Runtime Context<br/>static configuration]
+    State["<b>State</b><br/>short-term memory"]
+    Store["<b>Store</b><br/>long-term memory"]
+    Runtime["<b>Runtime Context</b><br/>static configuration"]
 
-    State --> Middleware{Middleware}
+    State --> Middleware{{"<b>Middleware</b>"}}
     Store --> Middleware
     Runtime --> Middleware
 
-    Middleware --> Prompt[System Prompt]
-    Middleware --> Messages[Messages]
-    Middleware --> Tools[Tools]
-    Middleware --> Model[Model]
-    Middleware --> Format[Response Format]
+    Middleware --> Prompt["<b>System Prompt</b>"]
+    Middleware --> Messages["<b>Messages</b>"]
+    Middleware --> Tools["<b>Tools</b>"]
+    Middleware --> Model["<b>Model</b>"]
+    Middleware --> Format["<b>Response Format</b>"]
+
+    style State fill:#efedfe,stroke:#7c3aed,stroke-width:3px
+    style Store fill:#efedfe,stroke:#7c3aed,stroke-width:3px
+    style Runtime fill:#efedfe,stroke:#7c3aed,stroke-width:3px
+    style Middleware fill:#efedfe,stroke:#7c3aed,stroke-width:3px
+    style Prompt fill:#e6f4f1,stroke:#2f6868,stroke-width:3px
+    style Messages fill:#e6f4f1,stroke:#2f6868,stroke-width:3px
+    style Tools fill:#e6f4f1,stroke:#2f6868,stroke-width:3px
+    style Model fill:#e6f4f1,stroke:#2f6868,stroke-width:3px
+    style Format fill:#e6f4f1,stroke:#2f6868,stroke-width:3px
 ```
 
-LangChain gives you precise control over what information flows into your agent at each stage of the loop. You can access different **data sources** to inform your agent's behavior:
+### Data Sources
 
-- **State**: Short-term memory for a conversation session. Examples: messages, uploaded files, conversation context
-- **Store**: Long-term memory across sessions. Examples: user preferences, extracted insights, historical data
-- **Runtime Context**: Configuration for the current run (not modified by the agent). Examples: user ID, API keys, database connections
+<CardGroup cols={3}>
+  <Card title="State" icon="hard-drive">
+    **Short-term memory**
 
-At each stage of the agent loop, you can read from (and sometimes write to) different data sources. LangChain uses [middleware](/oss/langchain/middleware) to give you fine-grained control over context at each stage. Click a card below to see detailed examples:
+    Conversation-scoped memory.
+
+    **Examples**: messages, uploaded files, authentication status
+  </Card>
+
+  <Card title="Store" icon="database">
+    **Long-term memory**
+
+    Cross-conversation memory.
+
+    **Examples**: user preferences, extracted insights, memories, historical data
+  </Card>
+
+  <Card title="Runtime Context" icon="gear">
+    **Static configuration**
+
+    Conversation-scoped configuration.
+
+    **Examples**: user ID, API keys, database connections, permissions
+  </Card>
+</CardGroup>
+
+<Tip>
+**Choosing the right data source:**
+- Use **State** for data that changes during a conversation (authentication status, file uploads, conversation stage)
+- Use **Store** for data that persists across conversations (user preferences, learned facts, historical summaries)
+- Use **Runtime Context** for configuration that stays constant during a run (user ID, API keys, environment settings, permissions)
+</Tip>
+
+### Control Knobs
+
+At each stage of the agent loop, you can read from (and sometimes write to) different data sources. LangChain uses [middleware](/oss/langchain/middleware) to give you fine-grained control over context at each stage.
+Click a card below to see detailed examples:
 
 <CardGroup cols={2}>
   <Card title="System Prompt" icon="comment-dots" href="#system-prompt">
