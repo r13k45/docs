@@ -1354,26 +1354,28 @@ Tools can access and update context during execution. This is useful for reading
   </Tab>
 
   <Tab title="State (Write)">
-    Write to State to track session-specific information:
+    Write to State to track session-specific information using Command:
 
     :::python
     ```python
     from langchain.tools import tool, ToolRuntime
     from langchain.agents import create_agent
+    from langgraph.types import Command
 
     @tool
     def authenticate_user(
         password: str,
         runtime: ToolRuntime
-    ) -> str:
+    ) -> Command:
         """Authenticate user and update State."""
         # Perform authentication (simplified)
         if password == "correct":
-            # Write to State: mark as authenticated
-            runtime.state["authenticated"] = True
-            return "Authentication successful"
+            # Write to State: mark as authenticated using Command
+            return Command(
+                update={"authenticated": True},
+            )
         else:
-            return "Authentication failed"
+            return Command(update={"authenticated": False})
 
     agent = create_agent(
         model="openai:gpt-4o",
@@ -1387,16 +1389,18 @@ Tools can access and update context during execution. This is useful for reading
     import * as z from "zod";
     import { tool } from "@langchain/core/tools";
     import { createAgent } from "langchain";
+    import { Command } from "@langchain/langgraph";
 
     const authenticateUser = tool(
       async ({ password }, { runtime }) => {
         // Perform authentication
         if (password === "correct") {
-          // Write to State: mark as authenticated
-          runtime.state.authenticated = true;
-          return "Authentication successful";
+          // Write to State: mark as authenticated using Command
+          return new Command({
+            update: { authenticated: true },
+          });
         } else {
-          return "Authentication failed";
+          return new Command({ update: { authenticated: false } });
         }
       },
       {
