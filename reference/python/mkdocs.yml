@@ -190,7 +190,7 @@ plugins:
 
   # https://squidfunk.github.io/mkdocs-material/plugins/privacy/#configuration
   - privacy:
-      enabled: false
+      enabled: true
       assets_exclude:
         # https://squidfunk.github.io/mkdocs-material/plugins/privacy/#config.assets_exclude
         # Disable downloading of external assets for specific origins

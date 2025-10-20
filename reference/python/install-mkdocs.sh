@@ -18,7 +18,7 @@ if [[ "${VERCEL:-0}" == "1" ]] && [[ -n "${MKDOCS_INSIDERS}" ]]; then
     echo "  Installing: mkdocs-material-insiders@${INSIDERS_VERSION}"
 
     # Uninstall regular mkdocs-material if it exists and install Insiders
-    uv pip uninstall --yes mkdocs-material || true
+    uv pip uninstall mkdocs-material || true
     uv pip install "${INSIDERS_URL}"
 
     echo "✓ MkDocs Material Insiders installed successfully"
