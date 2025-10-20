@@ -1,0 +1,32 @@
+---
+title: Human-in-the-loop
+description: Learn how to configure human approval for sensitive tool operations
+---
+
+Some tool operations may be sensitive and require human approval before execution. Deep agents support human-in-the-loop workflows through LangGraph's interrupt capabilities. You can configure which tools require approval using the `interrupt_on` parameter.
+
+```python
+from langchain_core.tools import tool
+from deepagents import create_deep_agent
+
+@tool
+def get_weather(city: str) -> str:
+    """Get the weather in a city."""
+    return f"The weather in {city} is sunny."
+
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[get_weather],
+    interrupt_on={
+        "get_weather": {
+            "allowed_decisions": ["approve", "edit", "reject"]
+        },
+    }
+)
+```
+
+---
+
+<Callout icon="pen-to-square" iconType="regular">
+  [Edit the source of this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/deepagents/human-in-the-loop.mdx)
+</Callout>
