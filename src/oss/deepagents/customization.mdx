@@ -38,7 +38,9 @@ Each deep agent tailored to a use case should include a custom system prompt spe
 ```python
 from deepagents import create_deep_agent
 
-research_instructions = """You are an expert researcher. Your job is to conduct thorough research, and then write a polished report.
+research_instructions = """\
+You are an expert researcher. Your job is to conduct \
+thorough research, and then write a polished report. \
 """
 
 agent = create_deep_agent(
