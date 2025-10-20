@@ -53,6 +53,30 @@ The core agent loop is quite simple:
 
 The agent may have access to different context throughout this loop. What ultimately matters is the context passed to the LLM: the final prompt (or list of messages) and the tools it has access to.
 
+### Context engineering overview
+
+**Context engineering in a nutshell:**
+- **Data Sources**: Read from State (session), Store (persistent), or Runtime Context (config)
+- **Middleware**: Intercept the agent loop to make decisions
+- **Control Knobs**: Dynamically adjust Prompt, Messages, Tools, Model, or output Format
+
+```mermaid
+flowchart TD
+    State[State<br/>short-term memory]
+    Store[Store<br/>long-term memory]
+    Runtime[Runtime Context<br/>static configuration]
+
+    State --> Middleware{Middleware}
+    Store --> Middleware
+    Runtime --> Middleware
+
+    Middleware --> Prompt[System Prompt]
+    Middleware --> Messages[Messages]
+    Middleware --> Tools[Tools]
+    Middleware --> Model[Model]
+    Middleware --> Format[Response Format]
+```
+
 LangChain gives you precise control over what information flows into your agent at each stage of the loop. You can access different **data sources** to inform your agent's behavior:
 
 - **State**: Short-term memory for a conversation session. Examples: messages, uploaded files, conversation context
@@ -796,6 +820,11 @@ Switch between different models dynamically based on conversation length, user p
     from langchain.chat_models import init_chat_model
     from typing import Callable
 
+    # Initialize models once outside the middleware
+    large_model = init_chat_model("anthropic:claude-sonnet-4-5")
+    standard_model = init_chat_model("openai:gpt-4o")
+    efficient_model = init_chat_model("openai:gpt-4o-mini")
+
     @wrap_model_call
     def state_based_model(
         request: ModelRequest,
@@ -807,13 +836,13 @@ Switch between different models dynamically based on conversation length, user p
 
         if message_count > 20:
             # Long conversation - use model with larger context window
-            request.model = init_chat_model("anthropic:claude-sonnet-4-5")
+            request.model = large_model
         elif message_count > 10:
             # Medium conversation
-            request.model = init_chat_model("openai:gpt-4o")
+            request.model = standard_model
         else:
             # Short conversation - use efficient model
-            request.model = init_chat_model("openai:gpt-4o-mini")
+            request.model = efficient_model
 
         return handler(request)
 
@@ -829,6 +858,11 @@ Switch between different models dynamically based on conversation length, user p
     ```typescript
     import { createMiddleware, initChatModel } from "langchain";
 
+    // Initialize models once outside the middleware
+    const largeModel = initChatModel("anthropic:claude-sonnet-4-5");
+    const standardModel = initChatModel("openai:gpt-4o");
+    const efficientModel = initChatModel("openai:gpt-4o-mini");
+
     const stateBasedModel = createMiddleware({
       name: "StateBasedModel",
       wrapModelCall: (request, handler) => {
@@ -837,11 +871,11 @@ Switch between different models dynamically based on conversation length, user p
         let model;
 
         if (messageCount > 20) {
-          model = initChatModel("anthropic:claude-sonnet-4-5");
+          model = largeModel;
         } else if (messageCount > 10) {
-          model = initChatModel("openai:gpt-4o");
+          model = standardModel;
         } else {
-          model = initChatModel("openai:gpt-4o-mini");
+          model = efficientModel;
         }
 
         return handler({ ...request, model });
@@ -866,6 +900,13 @@ Switch between different models dynamically based on conversation length, user p
     class Context:
         user_id: str
 
+    # Initialize available models once
+    MODEL_MAP = {
+        "gpt-4o": init_chat_model("openai:gpt-4o"),
+        "gpt-4o-mini": init_chat_model("openai:gpt-4o-mini"),
+        "claude-sonnet": init_chat_model("anthropic:claude-sonnet-4-5"),
+    }
+
     @wrap_model_call
     def store_based_model(
         request: ModelRequest,
@@ -880,8 +921,8 @@ Switch between different models dynamically based on conversation length, user p
 
         if user_prefs:
             preferred_model = user_prefs.value.get("preferred_model")
-            if preferred_model:
-                request.model = init_chat_model(preferred_model)
+            if preferred_model and preferred_model in MODEL_MAP:
+                request.model = MODEL_MAP[preferred_model]
 
         return handler(request)
 
@@ -903,6 +944,13 @@ Switch between different models dynamically based on conversation length, user p
       userId: z.string(),
     });
 
+    // Initialize available models once
+    const MODEL_MAP = {
+      "gpt-4o": initChatModel("openai:gpt-4o"),
+      "gpt-4o-mini": initChatModel("openai:gpt-4o-mini"),
+      "claude-sonnet": initChatModel("anthropic:claude-sonnet-4-5"),
+    };
+
     const storeBasedModel = createMiddleware({
       name: "StoreBasedModel",
       wrapModelCall: async (request, handler) => {
@@ -916,8 +964,8 @@ Switch between different models dynamically based on conversation length, user p
 
         if (userPrefs) {
           const preferredModel = userPrefs.value?.preferredModel;
-          if (preferredModel) {
-            model = initChatModel(preferredModel);
+          if (preferredModel && MODEL_MAP[preferredModel]) {
+            model = MODEL_MAP[preferredModel];
           }
         }
 
@@ -944,6 +992,11 @@ Switch between different models dynamically based on conversation length, user p
         cost_tier: str
         environment: str
 
+    # Initialize models once outside the middleware
+    premium_model = init_chat_model("anthropic:claude-sonnet-4-5")
+    standard_model = init_chat_model("openai:gpt-4o")
+    budget_model = init_chat_model("openai:gpt-4o-mini")
+
     @wrap_model_call
     def context_based_model(
         request: ModelRequest,
@@ -956,13 +1009,13 @@ Switch between different models dynamically based on conversation length, user p
 
         if environment == "production" and cost_tier == "premium":
             # Production premium users get best model
-            request.model = init_chat_model("anthropic:claude-sonnet-4-5")
+            request.model = premium_model
         elif cost_tier == "budget":
             # Budget tier gets efficient model
-            request.model = init_chat_model("openai:gpt-4o-mini")
+            request.model = budget_model
         else:
             # Standard tier
-            request.model = init_chat_model("openai:gpt-4o")
+            request.model = standard_model
 
         return handler(request)
 
@@ -985,6 +1038,11 @@ Switch between different models dynamically based on conversation length, user p
       environment: z.string(),
     });
 
+    // Initialize models once outside the middleware
+    const premiumModel = initChatModel("anthropic:claude-sonnet-4-5");
+    const standardModel = initChatModel("openai:gpt-4o");
+    const budgetModel = initChatModel("openai:gpt-4o-mini");
+
     const contextBasedModel = createMiddleware({
       name: "ContextBasedModel",
       wrapModelCall: (request, handler) => {
@@ -995,11 +1053,11 @@ Switch between different models dynamically based on conversation length, user p
         let model;
 
         if (environment === "production" && costTier === "premium") {
-          model = initChatModel("anthropic:claude-sonnet-4-5");
+          model = premiumModel;
         } else if (costTier === "budget") {
-          model = initChatModel("openai:gpt-4o-mini");
+          model = budgetModel;
         } else {
-          model = initChatModel("openai:gpt-4o");
+          model = standardModel;
         }
 
         return handler({ ...request, model });
