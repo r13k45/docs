@@ -17,7 +17,7 @@ import StableCalloutJS from '/snippets/stable-lc-callout-js.mdx';
 
 The hard part of building agents (or any LLM application) is making them reliable enough. While they may work for a prototype, they often fail in real-world use cases.
 
-**Why do they fail?**
+### Why do agents fail?
 
 When agents fail, it's usually because the LLM call inside the agent fails. LLMs fail for one of two reasons:
 
@@ -32,7 +32,7 @@ More often than not - it's actually the second reason that causes agents to not 
 New to context engineering? Start with the [conceptual overview](/oss/concepts/context) to understand the different types of context and when to use them.
 </Tip>
 
-### Understanding the agent loop
+### The agent loop
 
 A typical agent loop consists of two main steps:
 
@@ -49,30 +49,28 @@ A typical agent loop consists of two main steps:
 
 This loop continues until the LLM decides to finish.
 
-### Context engineering with middleware
-
-**Normally**, you send a prompt to an LLM and expect a response back. **Normally**, you execute a tool with the LLM's request and expect a tool message back. But what if you need to do more?
-
-LangChain [middleware](/oss/langchain/middleware) allows you to modify context at every step of the agent loop - intercepting, transforming, and enhancing data as it flows through your agent. This enables you to:
-
-- **Before model calls**: Dynamically adjust the system prompt, select which tools to expose, or switch models based on conversation state
-- **During model calls**: Transform messages, filter sensitive data, or modify parameters right before sending to the LLM
-- **After model calls**: Process responses, extract insights, or route to different tools
-- **Before/after tool execution**: Enrich tool inputs with external data, validate results, or update state
-
-Throughout this guide, you'll see examples of using middleware to implement context engineering patterns. Middleware is the solution that makes context engineering practical and maintainable.
-
 ### What you can control
 
-To build reliable agents, you need to control what happens at each step of the agent loop:
+To build reliable agents, you need to control what happens at each step of the agent loop, as well as what happens between steps.
 
-| Context Type | What You Control | Why It Matters |
-|--------------|------------------|----------------|
-| **[Model Context](#model-context)** | What goes into model calls | The LLM needs the right instructions, message history, tools, and response format to make good decisions |
-| **[Tool Context](#tool-context)** | What tools can access and produce | Tools need data to execute properly and must update state and store with their results |
-| **[Life-cycle Context](#life-cycle-context)** | What happens between steps | Transform messages, redact PII, update summaries, and control the flow of information through your agent |
+| Context Type | What You Control | Transient or Persistent |
+|--------------|------------------|-------------------------|
+| **[Model Context](#model-context)** | What goes into model calls (instructions, message history, tools, response format) | **Transient** - affects this call only |
+| **[Tool Context](#tool-context)** | What tools can access and produce (reads/writes to state, store, runtime context) | **Persistent** - tools update state/store |
+| **[Life-cycle Context](#life-cycle-context)** | What happens between steps (summarization, guardrails, logging) | **Persistent** - modifies what gets saved |
 
-Throughout this process, your agent accesses different sources of data:
+<CardGroup>
+  <Card title="Transient context">
+    What the LLM sees for a single call. You can modify messages, tools, or prompts without changing what's saved in state.
+  </Card>
+  <Card title="Persistent context">
+    What gets saved in state across turns. Life-cycle hooks and tool writes modify this permanently.
+  </Card>
+</CardGroup>
+
+### Data sources
+
+Throughout this process, your agent accesses (reads / writes) different sources of data:
 
 | Data Source | Type | Scope | Examples |
 |-------------|------|-------|----------|
@@ -80,41 +78,39 @@ Throughout this process, your agent accesses different sources of data:
 | **Store** | Long-term memory | Cross-conversation | User preferences, extracted insights, memories, historical data |
 | **Runtime Context** | Static configuration | Conversation-scoped | User ID, API keys, database connections, permissions, environment settings |
 
+### How it works
+
+LangChain [middleware](/oss/langchain/middleware) is the mechanism that makes context engineering practical. It intercepts and transforms context at every step of the agent loop - adjusting prompts, filtering tools, managing conversation history, and controlling what gets persisted to state.
+
+Throughout this guide, you'll see middleware examples for implementing context engineering patterns.
+
 ## Model Context
 
-**Normally**, when you call an LLM, you send a prompt and get a response. The model receives your messages, processes them, and returns its answer.
+Control what goes into each model call - instructions, available tools, which model to use, and output format. These decisions directly impact reliability and cost.
 
-But in many real-world scenarios, you need more control. You might need to:
-- Adjust the system prompt based on how long the conversation has been
-- Switch to a different model when the task requires more capability
-- Filter which tools are available based on user permissions
-- Change the response format depending on the user's role
+<CardGroup cols={1}>
+    <Card title="System Prompt" icon="message-lines" href="#system-prompt">
+        Base instructions from the developer to the LLM.
+    </Card>
+    <Card title="Messages" icon="comments" href="#messages">
+        The full list of messages (conversation history) sent to the LLM.
+    </Card>
+    <Card title="Tools" icon="wrench" href="#tools">
+        What tools the agent has access to. The names and descriptions and arguments of these are just as important as the text in the prompt.
+    </Card>
+    <Card title="Model" icon="brain-circuit" href="#model">
+        The actual model to be called. Different models have different capabilities and costs.
+    </Card>
+    <Card title="Response Format" icon="brackets-curly" href="#response-format">
+        What format the agent should respond in. The name and description and arguments of these are just as important as the text in the prompt.
+    </Card>
+</CardGroup>
 
-This is where **model context engineering** comes in. You're still making the same model call, but you're dynamically controlling what goes into it based on your application's context.
-
-Model context is critical because:
-- **Instructions matter**: The right system prompt can dramatically improve task performance
-- **Tool selection affects reliability**: Exposing too many tools confuses the model; too few limits capability
-- **Models have different strengths**: Switching models based on task complexity can optimize cost and quality
-- **Response format drives behavior**: Structured output ensures you get data in the format you need
-
-You can dynamically adjust:
-
-- [**System prompt**](#system-prompt): Set instructions based on state, store, or runtime context
-- [**Messages**](#messages): Trim, summarize, or transform the conversation history for this call
-- [**Tools**](#tools): Dynamically select which tools are available
-- [**Model**](#model): Switch between different models based on context
-- [**Response format**](#response-format): Control structured output schemas
-
-All of these can be configured based on data from state (short-term memory), store (long-term memory), or runtime context (static configuration).
-
-<Note>
-**Important:** Changes made here affect **transient context** - the information sent to the LLM for a single call. These modifications don't change what's saved in state (your conversation history). To modify what gets saved to state, use [life-cycle context](#life-cycle-context) with middleware hooks.
-</Note>
+All of these types of context can draw from **state** (short-term memory), **store** (long-term memory), or **runtime context** (static configuration).
 
 ### System Prompt
 
-Dynamically configure the system prompt based on conversation state, user preferences, or runtime configuration.
+The system prompt sets the LLM's behavior and capabilities. Different users, contexts, or conversation stages need different instructions. Successful agents draw on memories, preferences, and configuration to provide the right instructions for the current state of the conversation.
 
 <Tabs>
   <Tab title="State">
@@ -336,7 +332,8 @@ Dynamically configure the system prompt based on conversation state, user prefer
 
 ### Messages
 
-Manage conversation history by trimming, summarizing, or filtering messages before they're sent to the LLM.
+Messages make up the prompt that is sent to the LLM.
+It's critical to manage the content of messages to ensure that the LLM has the right information to respond well.
 
 <Tabs>
   <Tab title="State">
@@ -595,9 +592,11 @@ You can also directly modify the message list being sent to the LLM using `wrap_
 
 ### Tools
 
-Dynamically select which tools are available to the agent based on context like user permissions, conversation state, or feature flags.
+Tools are the piece of the puzzle that allow a model to interact with the world and take actions.
+It's important that a model is given access to the right tools, with the right descriptions, for a given task.
 
-**Why tool selection matters**: Providing the right tools to the LLM is critical. Too many tools can confuse the model and increase latency. Too few tools limit what the agent can do. Dynamic tool selection lets you balance capability with reliability by showing only relevant tools based on the current context.
+LangChain allows you to dynamically select tools based on the current state of the conversation
+so that you can give the model access to the right tools in the moment.
 
 <Tabs>
   <Tab title="State">
@@ -824,9 +823,8 @@ See [Dynamically selecting tools](/oss/langchain/middleware#dynamically-selectin
 
 ### Model
 
-Switch between different models dynamically based on conversation length, user preferences, or cost constraints.
-
-**Why dynamic model selection matters**: Different models have different strengths, costs, and context windows. Using a large, expensive model for simple queries wastes resources. Using a small model for complex tasks leads to poor results. Dynamic model selection optimizes for both cost and quality.
+Different models have different strengths, costs, and context windows. Select the right model for the task at hand, which
+might change during an agent run.
 
 <Tabs>
   <Tab title="State">
@@ -1095,9 +1093,7 @@ See [Dynamic model](/oss/langchain/agents#dynamic-model) for more examples.
 
 ### Response Format
 
-Change the structured output format based on conversation stage, user preferences, or runtime configuration.
-
-**Why response format matters**: Structured output ensures you get data back from the LLM in a predictable format. Different situations require different schemas - admins might need detailed debugging info, while regular users need simple responses.
+Structured output ensures predictable data formats from the LLM.
 
 <Tabs>
   <Tab title="State">
@@ -1378,24 +1374,15 @@ Change the structured output format based on conversation stage, user preference
 
 ## Tool Context
 
-**Normally**, when a tool executes, it receives the LLM's request parameters and returns a tool message back. The tool does its work and produces a result.
+Tools are special in that they both read and write context.
 
-But in real-world scenarios, tools often need more than just the parameters the LLM provides. They need to:
-- Check authentication status from the current conversation (state)
-- Access user preferences from previous conversations (store)
-- Use API keys, database connections, or user IDs from configuration (runtime context)
-- Update conversation state or persist data across sessions
+In the most basic case, when a tool executes, it receives the LLM's request parameters and returns a tool message back. The tool does its work and produces a result.
 
-This is where **tool context engineering** comes in. Tools can both read from and write to different context sources to access the data they need and update the system with their results.
-
-Tool context is critical because:
-- **Tools need data to work**: Most real-world tools require more than just the LLM's parameters - they need user IDs, API keys, database connections, or current state
-- **Tools produce valuable context**: Tool results should update state and store to inform future decisions
-- **Context determines tool behavior**: The same tool might behave differently based on user permissions, preferences, or conversation history
+Tools can also fetch important information for the model that allows it to perform and complete tasks.
 
 ### Reads
 
-Tools can read from state, store, and runtime context to access the information they need.
+Most real-world tools need more than just the LLM's parameters. They need user IDs for database queries, API keys for external services, or current session state to make decisions. Tools read from state, store, and runtime context to access this information.
 
 <Tabs>
   <Tab title="State">
@@ -1625,7 +1612,8 @@ Tools can read from state, store, and runtime context to access the information 
 
 ### Writes
 
-Tools can write to State and Store to update context and persist data across conversations.
+Tool results can be used to help an agent complete a given task. Tools can both return results directly to the model
+and update the memory of the agent to make important context available to future steps.
 
 <Tabs>
   <Tab title="State">
@@ -1776,17 +1764,17 @@ Tools can write to State and Store to update context and persist data across con
   </Tab>
 </Tabs>
 
-See [Tools](/oss/langchain/tools) for comprehensive examples of accessing State, Store, and Runtime Context in tools.
+See [Tools](/oss/langchain/tools) for comprehensive examples of accessing state, store, and runtime context in tools.
 
 ## Life-cycle Context
 
-**Normally**, the agent loop flows directly from model call to tool execution and back. But what if you need to intercept this flow to:
-- Summarize long conversations before they're persisted to state
-- Redact personally identifiable information (PII) from messages
-- Extract insights from conversations and save them to long-term memory
-- Transform or validate data as it moves between steps
+Control what happens **between** the core agent steps - intercepting data flow to implement summarization, guardrails, logging, and other cross-cutting concerns.
 
-This is where **life-cycle context engineering** comes in. [Middleware](/oss/langchain/middleware) provides hooks that run **between** the core steps of your agent loop, allowing you to intercept and transform context as it flows through your system.
+[Middleware](/oss/langchain/middleware) provides hooks that run between model calls and tool execution, with three key capabilities:
+
+**1. Read context** - Access state, store, and runtime context to make decisions about what to do next
+**2. Write context** - Modify state and store to persist changes, update conversation history, or save insights
+**3. Time travel** - Jump to different steps in the agent cycle based on context (e.g., skip tool execution if a condition is met, repeat model call with modified context)
 
 <div style={{ display: "flex", justifyContent: "center" }}>
   <img
@@ -1795,20 +1783,6 @@ This is where **life-cycle context engineering** comes in. [Middleware](/oss/lan
     className="rounded-lg"
   />
 </div>
-
-Life-cycle context is critical because:
-- **Conversations grow unbounded**: Without management, message history will eventually exceed context windows
-- **Data needs transformation**: Raw tool results or LLM responses often need processing before being saved
-- **Cross-cutting concerns exist**: PII redaction, logging, and monitoring need to happen consistently across all agent executions
-- **State management is complex**: You need fine-grained control over what gets persisted and when
-
-Middleware provides several hooks to control the agent life-cycle:
-
-- **`before_model`**: Runs before the model call, can modify state
-- **`wrap_model_call`**: Wraps the model call, can modify the request and response
-- **`after_model`**: Runs after the model call, can modify state based on the response
-- **`before_tool`**: Runs before tool execution, can modify tool inputs
-- **`after_tool`**: Runs after tool execution, can modify tool outputs
 
 ### Summarization
 
@@ -1860,18 +1834,8 @@ When the conversation exceeds the token limit, `SummarizationMiddleware` automat
 
 The summarized conversation history is permanently updated - future turns will see the summary instead of the original messages.
 
-### Other middleware patterns
-
-Beyond summarization, middleware enables many other life-cycle patterns:
-
-- **PII redaction**: Remove sensitive information before persisting to state or store
-- **Insight extraction**: Analyze conversations and save key takeaways to long-term memory
-- **Logging and monitoring**: Track model calls, tool executions, and performance metrics
-- **Dynamic tool selection**: Choose tools based on LLM analysis of the conversation
-- **Response validation**: Ensure LLM outputs meet quality standards before returning
-
 <Note>
-For a complete list of built-in middleware and how to create custom middleware, see the [Middleware documentation](/oss/langchain/middleware).
+For a complete list of built-in middleware, available hooks, and how to create custom middleware, see the [Middleware documentation](/oss/langchain/middleware).
 </Note>
 
 ## Best practices
