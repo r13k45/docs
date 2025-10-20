@@ -37,7 +37,7 @@ LangChain's standard model interfaces give you access to many different provider
 
 Models can be utilized in two ways:
 
-1. **With agents** - Models can be dynamically specified when creating an agent. See the [agents](/oss/langchain/agents#model) guide for more details on how to do this.
+1. **With agents** - Models can be dynamically specified when creating an [agent](/oss/langchain/agents#model).
 2. **Standalone** - Models can be called directly (outside of the agent loop) for tasks like text generation, classification, or extraction without the need for an agent framework.
 
 The same model interface works in both contexts, which gives you the flexibility to start simple and scale up to more complex agent-based workflows as needed.
@@ -162,16 +162,6 @@ const model = await initChatModel(
 ## Invocation
 
 A chat model must be invoked to generate an output. There are three primary invocation methods, each suited to different use cases.
-
-:::python
-<Tip>
-    Each invocation method has an <Tooltip tip="Asynchronous methods are useful for non-blocking operations, especially in web servers or applications that handle multiple tasks concurrently.">asynchronous</Tooltip> equivalent, typically prefixed with the letter `'a'`.
-
-    For example: `ainvoke()`, `astream()`, `abatch()`.
-
-    A full list of async methods can be found in the [reference docs](https://reference.langchain.com/python/langchain/).
-</Tip>
-:::
 
 ### Invoke
 
@@ -475,7 +465,7 @@ for response in model.batch_as_completed([
     print(response)
 ```
 <Note>
-    When using @[`batch_as_completed()`][BaseChatModel.batch_as_completed], results may arrive out of order. Each includes the input index for matching to reconstruct the original order if needed.
+    When using @[`batch_as_completed()`][BaseChatModel.batch_as_completed], results may arrive out of order. Each includes the input index for matching to reconstruct the original order as needed.
 </Note>
 
 <Tip>
@@ -1157,19 +1147,19 @@ LangChain supports all major model providers, including OpenAI, Anthropic, Googl
 
 ### Multimodal
 
-Certain models can process and return non-textual data such as images, audio, and video. You can pass non-textual data to a model by providing [content blocks](/oss/langchain/messages#content).
+Certain models can process and return non-textual data such as images, audio, and video. You can pass non-textual data to a model by providing [content blocks](/oss/langchain/messages#message-content).
 
 <Tip>
     All LangChain chat models with underlying multimodal capabilities support:
 
     1. Data in the cross-provider standard format (see [our messages guide](/oss/langchain/messages))
-    2. OpenAI [chat completions](https://platform.openai.com/docs/guides/images-vision?api-mode=chat) format
+    2. OpenAI [chat completions](https://platform.openai.com/docs/api-reference/chat) format
     3. Any format that is native to that specific provider (e.g., Anthropic models accept Anthropic native format)
 </Tip>
 
 See the [multimodal section](/oss/langchain/messages#multimodal) of the messages guide for details.
 
-Some models can also return multimodal data as part of their response. In such cases, the resulting @[`AIMessage`] will have content blocks with multimodal types.
+<Tooltip tip="Not all LLMs are made equally!" cta="See reference" href="https://models.dev/">Some models</Tooltip> can return multimodal data as part of their response. If invoked to do so, the resulting @[`AIMessage`] will have content blocks with multimodal types.
 
 :::python
 ```python Multimodal output

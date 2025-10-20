@@ -1251,15 +1251,15 @@ agent = create_agent(
 ### When to use decorators
 
 <CardGroup cols={2}>
-  <Card title="Use decorators when" icon="check">
-    - You need a single hook
-    - No complex configuration
-  </Card>
-  <Card title="Use classes when" icon="code">
-    - Multiple hooks needed
-    - Complex configuration
-    - Reusable across projects (config on init)
-  </Card>
+    <Card title="Use decorators when" icon="check">
+        • You need a single hook<br/>
+        • No complex configuration
+    </Card>
+    <Card title="Use classes when" icon="code">
+        • Multiple hooks needed<br/>
+        • Complex configuration<br/>
+        • Reuse across projects (config on init)
+    </Card>
 </CardGroup>
 
 :::
@@ -1269,12 +1269,12 @@ agent = create_agent(
 ### Two hook styles
 
 <CardGroup cols={2}>
-  <Card title="Node-style hooks" icon="diagram-project">
-    Run sequentially at specific execution points. Use for logging, validation, and state updates.
-  </Card>
-  <Card title="Wrap-style hooks" icon="arrows-rotate">
-    Intercept execution with full control over handler calls. Use for retries, caching, and transformation.
-  </Card>
+    <Card title="Node-style hooks" icon="diagram-project">
+        Run sequentially at specific execution points. Use for logging, validation, and state updates.
+    </Card>
+    <Card title="Wrap-style hooks" icon="arrows-rotate">
+        Intercept execution with full control over handler calls. Use for retries, caching, and transformation.
+    </Card>
 </CardGroup>
 
 #### Node-style hooks

@@ -37,7 +37,7 @@ Controls how the agent returns structured data:
 - **`None`**: No structured output
 
 When a schema type is provided directly, LangChain automatically chooses:
-- `ProviderStrategy` for models supporting native structured output (OpenAI, Grok)
+- `ProviderStrategy` for models supporting native structured output (e.g. [OpenAI](/oss/integrations/providers/openai), [Grok](/oss/integrations/providers/xai))
 - `ToolStrategy` for all other models
 
 The structured response is returned in the `structured_response` key of the agent's final state.
