@@ -36,11 +36,11 @@ from langchain_memgraph.graphs.memgraph import MemgraphLangChain
 
 db = MemgraphLangChain(url=url, username=username, password=password)
 
-llm = init_chat_model("gpt-4o-mini", model_provider="openai")
+model = init_chat_model("gpt-4o-mini", model_provider="openai")
 
 toolkit = MemgraphToolkit(
     db=db,  # Memgraph instance
-    llm=llm,  # LLM chat model for LLM operations
+    llm=model,  # LLM chat model for LLM operations
 )
 ```
 

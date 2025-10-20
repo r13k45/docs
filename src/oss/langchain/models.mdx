@@ -1251,7 +1251,7 @@ LangChain supports running models locally on your own hardware. This is useful f
 Many providers offer prompt caching features to reduce latency and cost on repeat processing of the same tokens. These features can be **implicit** or **explicit**:
 
 - **Implicit prompt caching:** providers will automatically pass on cost savings if a request hits a cache. Examples: [OpenAI](/oss/integrations/chat/openai) and [Gemini](/oss/integrations/chat/google_generative_ai) (Gemini 2.5 and above).
-- **Explicit caching:** providers allow you to manually indicate cache points for greater control or to guarantee cost savings. Examples: @[`ChatOpenAI`] (via `prompt_cache_key`), [Anthropic](/oss/integrations/chat/anthropic#prompt-caching), [AWS Bedrock](/oss/integrations/chat/bedrock#prompt-caching), [Gemini](https://python.langchain.com/api_reference/google_genai/chat_models/langchain_google_genai.chat_models.ChatGoogleGenerativeAI.html).
+- **Explicit caching:** providers allow you to manually indicate cache points for greater control or to guarantee cost savings. Examples: @[`ChatOpenAI`] (via `prompt_cache_key`), Anthropic's [`AnthropicPromptCachingMiddleware`](/oss/integrations/chat/anthropic#prompt-caching) and [`cache_control`](https://docs.langchain.com/oss/python/integrations/chat/anthropic#prompt-caching) options, [AWS Bedrock](/oss/integrations/chat/bedrock#prompt-caching), [Gemini](https://python.langchain.com/api_reference/google_genai/chat_models/langchain_google_genai.chat_models.ChatGoogleGenerativeAI.html).
 
 <Warning>
     Prompt caching is often only engaged above a minimum input token threshold. See [provider pages](/oss/integrations/chat) for details.
@@ -1461,12 +1461,12 @@ You can track aggregate token counts across models in an application using eithe
         from langchain.chat_models import init_chat_model
         from langchain_core.callbacks import UsageMetadataCallbackHandler
 
-        llm_1 = init_chat_model(model="openai:gpt-4o-mini")
-        llm_2 = init_chat_model(model="anthropic:claude-3-5-haiku-latest")
+        model_1 = init_chat_model(model="openai:gpt-4o-mini")
+        model_2 = init_chat_model(model="anthropic:claude-3-5-haiku-latest")
 
         callback = UsageMetadataCallbackHandler()
-        result_1 = llm_1.invoke("Hello", config={"callbacks": [callback]})
-        result_2 = llm_2.invoke("Hello", config={"callbacks": [callback]})
+        result_1 = model_1.invoke("Hello", config={"callbacks": [callback]})
+        result_2 = model_2.invoke("Hello", config={"callbacks": [callback]})
         callback.usage_metadata
         ```
         ```
@@ -1490,12 +1490,12 @@ You can track aggregate token counts across models in an application using eithe
         from langchain.chat_models import init_chat_model
         from langchain_core.callbacks import get_usage_metadata_callback
 
-        llm_1 = init_chat_model(model="openai:gpt-4o-mini")
-        llm_2 = init_chat_model(model="anthropic:claude-3-5-haiku-latest")
+        model_1 = init_chat_model(model="openai:gpt-4o-mini")
+        model_2 = init_chat_model(model="anthropic:claude-3-5-haiku-latest")
 
         with get_usage_metadata_callback() as cb:
-            llm_1.invoke("Hello")
-            llm_2.invoke("Hello")
+            model_1.invoke("Hello")
+            model_2.invoke("Hello")
             print(cb.usage_metadata)
         ```
         ```python
@@ -1646,17 +1646,17 @@ configurable_model.invoke(
 <Accordion title="Configurable model with default values">
     We can create a configurable model with default model values, specify which parameters are configurable, and add prefixes to configurable params:
     ```python
-    first_llm = init_chat_model(
+    first_model = init_chat_model(
             model="gpt-4.1-mini",
             temperature=0,
             configurable_fields=("model", "model_provider", "temperature", "max_tokens"),
             config_prefix="first",  # Useful when you have a chain with multiple models
     )
 
-    first_llm.invoke("what's your name")
+    first_model.invoke("what's your name")
     ```
     ```python
-    first_llm.invoke(
+    first_model.invoke(
         "what's your name",
             config={
             "configurable": {
@@ -1688,10 +1688,10 @@ configurable_model.invoke(
             location: str = Field(..., description="The city and state, e.g. San Francisco, CA")
 
 
-    llm = init_chat_model(temperature=0)
-    llm_with_tools = llm.bind_tools([GetWeather, GetPopulation])
+    model = init_chat_model(temperature=0)
+    model_with_tools = model.bind_tools([GetWeather, GetPopulation])
 
-    llm_with_tools.invoke(
+    model_with_tools.invoke(
         "what's bigger in 2024 LA or NYC", config={"configurable": {"model": "gpt-4.1-mini"}}
     ).tool_calls
     ```
@@ -1712,7 +1712,7 @@ configurable_model.invoke(
     ]
     ```
     ```python
-    llm_with_tools.invoke(
+    model_with_tools.invoke(
         "what's bigger in 2024 LA or NYC",
             config={"configurable": {"model": "claude-sonnet-4-5"}},
     ).tool_calls
