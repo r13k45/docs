@@ -512,25 +512,6 @@
                 ]
               },
               {
-                "tab": "Deep Agents",
-                "pages": [
-                  "oss/javascript/deepagents/overview",
-                  {
-                    "group": "Get started",
-                    "pages": [
-                      "oss/javascript/deepagents/quickstart",
-                      "oss/javascript/deepagents/customization"
-                    ]
-                  },
-                  {
-                    "group": "Core capabilities",
-                    "pages": [
-                      "oss/javascript/deepagents/middleware"
-                    ]
-                  }
-                ]
-              },
-              {
                 "tab": "LangGraph",
                 "pages": [
                   "oss/javascript/langgraph/overview",
