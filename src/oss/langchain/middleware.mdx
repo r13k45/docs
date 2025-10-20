@@ -17,7 +17,13 @@ Middleware provides a way to more tightly control what happens inside the agent.
 
 The core agent loop involves calling a model, letting it choose tools to execute, and then finishing when it calls no more tools:
 
-![core agent loop](/oss/images/core_agent_loop.png)
+<div style={{ display: "flex", justifyContent: "center" }}>
+  <img
+    src="/oss/images/core_agent_loop.png"
+    alt="Core agent loop diagram"
+    className="rounded-lg"
+  />
+</div>
 
 Middleware exposes hooks before and after each of those steps:
 

@@ -53,7 +53,13 @@ result = agent.invoke({
 
 Under the hood, @[`create_agent`] is built on the basic agent loop -- calling a model, letting it choose tools to execute, and then finishing when it calls no more tools:
 
-![core agent loop](/oss/images/core_agent_loop.png)
+<div style={{ display: "flex", justifyContent: "center" }}>
+  <img
+    src="/oss/images/core_agent_loop.png"
+    alt="Core agent loop diagram"
+    className="rounded-lg"
+  />
+</div>
 
 For more information, see [Agents](/oss/langchain/agents).
 
