@@ -1,0 +1,104 @@
+---
+title: Subagents
+description: Learn how to use subagents to delegate work and keep context clean
+---
+
+Deep agents can create subagents to delegate work. You can specify custom subagents in the `subagents` parameter. Subagents are useful for [context quarantine](https://www.dbreunig.com/2025/06/26/how-to-fix-your-context.html#context-quarantine) (keeping the main agent's context clean) and custom instructions.
+
+`subagents` should be a list of dictionaries, where each dictionary follows this schema:
+
+**SubAgent fields:**
+- **name**: The name of the subagent, and how the main agent will call the subagent
+- **description**: The description of the subagent that is shown to the main agent
+- **system_prompt**: The system prompt used for the subagent
+- **tools**: The list of tools that the subagent has access to
+- **model**: Optional model name or model instance
+- **middleware**: Optional additional middleware to attach to the subagent
+- **interrupt_on**: Optional custom interrupt config that specifies human-in-the-loop interactions for your tools
+
+**CompiledSubAgent fields:**
+- **name**: The name of the subagent, and how the main agent will call the subagent
+- **description**: The description of the subagent that is shown to the main agent
+- **runnable**: A pre-built LangGraph graph/agent that will be used as the subagent
+
+## Using SubAgent
+
+```python
+import os
+from typing import Literal
+from tavily import TavilyClient
+from deepagents import create_deep_agent
+
+tavily_client = TavilyClient(api_key=os.environ["TAVILY_API_KEY"])
+
+def internet_search(
+    query: str,
+    max_results: int = 5,
+    topic: Literal["general", "news", "finance"] = "general",
+    include_raw_content: bool = False,
+):
+    """Run a web search"""
+    return tavily_client.search(
+        query,
+        max_results=max_results,
+        include_raw_content=include_raw_content,
+        topic=topic,
+    )
+
+research_subagent = {
+    "name": "research-agent",
+    "description": "Used to research more in depth questions",
+    "system_prompt": "You are a great researcher",
+    "tools": [internet_search],
+    "model": "openai:gpt-4o",  # Optional override, defaults to main agent model
+}
+subagents = [research_subagent]
+
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    subagents=subagents
+)
+```
+
+## Using CompiledSubAgent
+
+For more complex use cases, you can provide your own pre-built LangGraph graph as a subagent:
+
+```python
+from deepagents import create_deep_agent, CompiledSubAgent
+from langchain.agents import create_agent
+
+# Create a custom agent graph
+custom_graph = create_agent(
+    model=your_model,
+    tools=specialized_tools,
+    prompt="You are a specialized agent for data analysis..."
+)
+
+# Use it as a custom subagent
+custom_subagent = CompiledSubAgent(
+    name="data-analyzer",
+    description="Specialized agent for complex data analysis tasks",
+    runnable=custom_graph
+)
+
+subagents = [custom_subagent]
+
+agent = create_deep_agent(
+    model="anthropic:claude-sonnet-4-20250514",
+    tools=[internet_search],
+    system_prompt=research_instructions,
+    subagents=subagents
+)
+```
+
+
+
+
+In addition to any user-defined subagents, deep agents have access to a `general-purpose` subagent at all times. This subagent has the same instructions as the main agent and all the tools it has access to. The primary purpose of the `general-purpose` subagent is to isolate context—the main agent can delegate a complex task to this subagent and get a concise answer back without bloat from intermediate tool calls.
+
+---
+
+<Callout icon="pen-to-square" iconType="regular">
+  [Edit the source of this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/deepagents/subagents.mdx)
+</Callout>
