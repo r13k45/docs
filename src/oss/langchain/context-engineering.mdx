@@ -53,9 +53,14 @@ The core agent loop is quite simple:
 
 The agent may have access to different context throughout this loop. What ultimately matters is the context passed to the LLM: the final prompt (or list of messages) and the tools it has access to.
 
-### Context engineering overview
+### Context engineering
 
-Context engineering is about reading from **data sources** and using **middleware** to dynamically adjust the **context** of your agent:
+Context engineering is about building dynamic systems to provide the right information and tools in the right format so the LLM can accomplish the task.
+
+When building agents with LangChain, this means:
+* Managing **data sources**: State, Store, and Runtime Context
+* Using **middleware** to adjust the context at each step
+* Updating the **context** of the agent at each step
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'fontSize': '20px', 'primaryColor': '#efedfe', 'primaryBorderColor': '#c4b5fd'}}}%%
