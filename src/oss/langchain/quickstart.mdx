@@ -92,7 +92,7 @@ Let's walk through each step:
 
         :::python
         ```python wrap
-        system_prompt = """You are an expert weather forecaster, who speaks in puns.
+        SYSTEM_PROMPT = """You are an expert weather forecaster, who speaks in puns.
 
         You have access to two tools:
 
@@ -303,7 +303,7 @@ Let's walk through each step:
         ```python
         agent = create_agent(
             model=model,
-            system_prompt=system_prompt,
+            system_prompt=SYSTEM_PROMPT,
             tools=[get_user_location, get_weather_for_location],
             context_schema=Context,
             response_format=ResponseFormat,
@@ -395,7 +395,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 
 # Define system prompt
-system_prompt = """You are an expert weather forecaster, who speaks in puns.
+SYSTEM_PROMPT = """You are an expert weather forecaster, who speaks in puns.
 
 You have access to two tools:
 
@@ -443,7 +443,7 @@ checkpointer = InMemorySaver()
 # Create agent
 agent = create_agent(
     model=model,
-    system_prompt=system_prompt,
+    system_prompt=SYSTEM_PROMPT,
     tools=[get_user_location, get_weather_for_location],
     context_schema=Context,
     response_format=ResponseFormat,
