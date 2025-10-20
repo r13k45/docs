@@ -164,15 +164,15 @@
                       "oss/python/langchain/messages",
                       "oss/python/langchain/tools",
                       "oss/python/langchain/short-term-memory",
-                      "oss/python/langchain/streaming"
+                      "oss/python/langchain/streaming",
+                      "oss/python/langchain/middleware",
+                      "oss/python/langchain/structured-output"
                     ]
                   },
                   {
                     "group": "Advanced usage",
                     "pages": [
-                      "oss/python/langchain/middleware",
                       "oss/python/langchain/guardrails",
-                      "oss/python/langchain/structured-output",
                       "oss/python/langchain/runtime",
                       "oss/python/langchain/context-engineering",
                       "oss/python/langchain/mcp",
@@ -463,15 +463,15 @@
                       "oss/javascript/langchain/messages",
                       "oss/javascript/langchain/tools",
                       "oss/javascript/langchain/short-term-memory",
-                      "oss/javascript/langchain/streaming"
+                      "oss/javascript/langchain/streaming",
+                      "oss/javascript/langchain/middleware",
+                      "oss/javascript/langchain/structured-output"
                     ]
                   },
                   {
                     "group": "Advanced usage",
                     "pages": [
-                      "oss/javascript/langchain/middleware",
                       "oss/javascript/langchain/guardrails",
-                      "oss/javascript/langchain/structured-output",
                       "oss/javascript/langchain/runtime",
                       "oss/javascript/langchain/context-engineering",
                       "oss/javascript/langchain/mcp",
