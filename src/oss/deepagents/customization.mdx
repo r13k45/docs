@@ -8,6 +8,7 @@ description: Learn how to customize deep agents with system prompts, tools, suba
 
 By default, `deepagents` uses `"claude-sonnet-4-5-20250929"`. You can customize this by passing any [LangChain model object](https://python.langchain.com/docs/integrations/chat/).
 
+:::python
 ```python
 from langchain.chat_models import init_chat_model
 from deepagents import create_deep_agent
@@ -19,6 +20,13 @@ agent = create_deep_agent(
     model=model,
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 ## System prompt
 
@@ -26,6 +34,7 @@ Deep agents come with a built-in system prompt inspired by Claude Code's system 
 
 Each deep agent tailored to a use case should include a custom system prompt specific to that use case.
 
+:::python
 ```python
 from deepagents import create_deep_agent
 
@@ -36,11 +45,19 @@ agent = create_deep_agent(
     system_prompt=research_instructions,
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 ## Tools
 
 Just like tool-calling agents, a deep agent gets a set of top level tools that it has access to.
 
+:::python
 ```python
 import os
 from typing import Literal
@@ -67,6 +84,13 @@ agent = create_deep_agent(
     tools=[internet_search]
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 In addition to any tools that you provide, deep agents also get access to a number of default tools. These are:
 
@@ -142,6 +166,7 @@ agent = create_deep_agent(
 
 For more complex use cases, you can provide your own pre-built LangGraph graph as a subagent:
 
+:::python
 ```python
 from deepagents import create_deep_agent, CompiledSubAgent
 from langchain.agents import create_agent
@@ -169,6 +194,13 @@ agent = create_deep_agent(
     subagents=subagents
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 In addition to any user-defined subagents, deep agents have access to a `general-purpose` subagent at all times. This subagent has the same instructions as the main agent and all the tools it has access to. The primary purpose of the `general-purpose` subagent is to isolate context—the main agent can delegate a complex task to this subagent and get a concise answer back without bloat from intermediate tool calls.
 
@@ -221,6 +253,7 @@ For example, you can store instructions for the agent. An agent can be prompted 
 
 `create_deep_agent` is implemented with middleware that can be customized. You can provide additional middleware to extend functionality, add tools, or implement custom hooks. Learn more about middleware in the [middleware section](/oss/deepagents/middleware).
 
+:::python
 ```python
 from langchain_core.tools import tool
 from deepagents import create_deep_agent
@@ -244,3 +277,10 @@ agent = create_deep_agent(
     middleware=[WeatherMiddleware()]
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::

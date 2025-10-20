@@ -22,6 +22,7 @@ Planning is integral to solving complex problems. If you've used Claude Code rec
 
 `TodoListMiddleware` provides your agent with a tool specifically for updating this to-do list. Before, and while it executes a multi-part task, the agent is prompted to use the `write_todos` tool to keep track of what its doing, and what still needs to be done.
 
+:::python
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import TodoListMiddleware
@@ -38,6 +39,13 @@ agent = create_agent(
     ],
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 ## Filesystem middleware
 
@@ -75,6 +83,7 @@ agent = create_agent(
 
 By default, these tools will write to a local "filesystem" in your graph state. If you provide a `Store` object to your agent runtime, you can also enable saving to long-term memory, which persists **across** different threads of your agent.
 
+:::python
 ```python
 from langchain.agents import create_agent
 from deepagents.middleware import FilesystemMiddleware
@@ -96,6 +105,13 @@ agent = create_agent(
     ],
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 If you enable `use_longterm_memory=True` and you provide a `Store` in your agent runtime, then any files prefixed with **/memories/** will be saved to the long-term memory store. Note that any agents deployed on LangGraph Platform will automatically be provided a long-term memory store.
 
@@ -141,6 +157,7 @@ A subagent is defined with a **name**, **description**, **system prompt**, and *
 
 For more complex use cases, you can also provide your own pre-built LangGraph graph as a subagent.
 
+:::python
 ```python
 from langchain.agents import create_agent
 from deepagents.middleware.subagents import SubAgentMiddleware
@@ -173,5 +190,12 @@ agent = create_agent(
     ],
 )
 ```
+:::
+
+:::js
+```typescript
+// TODO: Add JS implementation
+```
+:::
 
 In addition to any user-defined subagents, the main agent has access to a `general-purpose` subagent at all times. This subagent has the same instructions as the main agent and all the tools it has access to. The primary purpose of the `general-purpose` subagent is context isolation—the main agent can delegate a complex task to this subagent and get a concise answer back without bloat from intermediate tool calls.
