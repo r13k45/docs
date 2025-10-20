@@ -47,37 +47,29 @@ A typical agent consists of two nodes running in a loop:
   />
 </div>
 
-This loop continues until the LLM decides to finish. Throughout this process, the agent may access different sources of data:
+This loop continues until the LLM decides to finish.
+
+[Middleware](/oss/langchain/middleware) provides additional hooks that run **between** these nodes, allowing you to modify context as it flows through the agent loop. For example, you can automatically summarize long conversations or redact sensitive information before messages are sent to the LLM.
+
+<div style={{ display: "flex", justifyContent: "center" }}>
+  <img
+    src="/oss/images/middleware_final.png"
+    alt="Middleware hooks in the agent loop"
+    className="rounded-lg"
+  />
+</div>
+
+Throughout this process, the agent may access different sources of data:
+
+| Data Source | Type | Scope | Examples |
+|-------------|------|-------|----------|
+| **State** | Short-term memory | Conversation-scoped | Messages, uploaded files, todos, status flags, tool results |
+| **Store** | Long-term memory | Cross-conversation | User preferences, extracted insights, memories, historical data |
+| **Runtime Context** | Static configuration | Conversation-scoped | User ID, API keys, database connections, permissions |
+
+To have full control over your agent, you need to control what happens in each node and between them:
 
 <CardGroup cols={3}>
-  <Card title="State" icon="hard-drive">
-    **Short-term memory**
-
-    Conversation-scoped memory.
-
-    **Examples**: messages, uploaded files, todos, status flags, tool results
-  </Card>
-
-  <Card title="Store" icon="database">
-    **Long-term memory**
-
-    Cross-conversation memory.
-
-    **Examples**: user preferences, extracted insights, memories, historical data
-  </Card>
-
-  <Card title="Runtime Context" icon="gear">
-    **Static configuration**
-
-    Conversation-scoped configuration.
-
-    **Examples**: user ID, API keys, database connections, permissions
-  </Card>
-</CardGroup>
-
-To have full control over your agent, you need to control what happens in each node:
-
-<CardGroup cols={2}>
   <Card title="Model Context" icon="microchip" href="#model-context">
     Control what the LLM sees: system prompt, messages, tools, model selection, and response format
   </Card>
@@ -85,17 +77,25 @@ To have full control over your agent, you need to control what happens in each n
   <Card title="Tool Context" icon="wrench" href="#tool-context">
     Control what tools can access: reading from and writing to state, store, and runtime context
   </Card>
+
+  <Card title="Middleware" icon="arrows-rotate" href="#middleware">
+    Control what happens between nodes: summarize conversations, redact PII, and modify context flow
+  </Card>
 </CardGroup>
 
 ## Model Context
 
-The model node is where the LLM is called. You have full control over what gets passed to the LLM at this stage. Using [middleware](/oss/langchain/middleware), you can dynamically adjust:
+The model node is where the LLM is called. You have full control over what gets passed to the LLM at this stage.
 
-- [**System prompt**](/oss/langchain/middleware#system-prompt): Set instructions based on State, Store, or Runtime Context
-- [**Messages**](/oss/langchain/middleware#messages): Trim, summarize, or transform the conversation history
-- [**Tools**](/oss/langchain/middleware#tools): Dynamically select which tools are available
-- [**Model**](/oss/langchain/middleware#model): Switch between different models based on context
-- [**Response format**](/oss/langchain/middleware#response-format): Control structured output schemas
+**Important:** Changes made in the model node affect **transient context** - the information sent to the LLM for a single call. These modifications don't change what's saved in state (your conversation history). To modify what gets saved to state, use [middleware hooks](#middleware).
+
+You can dynamically adjust:
+
+- [**System prompt**](#system-prompt): Set instructions based on state, store, or runtime context
+- [**Messages**](#messages): Trim, summarize, or transform the conversation history for this call
+- [**Tools**](#tools): Dynamically select which tools are available
+- [**Model**](#model): Switch between different models based on context
+- [**Response format**](#response-format): Control structured output schemas
 
 All of these can be configured based on data from state (short-term memory), store (long-term memory), or runtime context (static configuration).
 
@@ -105,7 +105,7 @@ Dynamically configure the system prompt based on conversation state, user prefer
 
 <Tabs>
   <Tab title="State">
-    Access message count or conversation context from State:
+    Access message count or conversation context from state:
 
     :::python
     ```python
@@ -206,7 +206,7 @@ Dynamically configure the system prompt based on conversation state, user prefer
     const contextSchema = z.object({
       userId: z.string(),
     });
-    
+
     type Context = z.infer<typeof contextSchema>;
 
     const agent = createAgent({
@@ -286,7 +286,7 @@ Dynamically configure the system prompt based on conversation state, user prefer
       userRole: z.string(),
       deploymentEnv: z.string(),
     });
-    
+
     type Context = z.infer<typeof contextSchema>;
 
     const agent = createAgent({
@@ -540,7 +540,7 @@ Manage conversation history by trimming, summarizing, or filtering messages befo
       maxMessages: z.number(),
       userTier: z.string(),
     });
-    
+
     type Context = z.infer<typeof contextSchema>;
 
     const contextBasedTrimming = createMiddleware<Context>({
@@ -1745,6 +1745,67 @@ Tools can write to State and Store to update context and persist data across con
 </Tabs>
 
 See [Tools](/oss/langchain/tools) for comprehensive examples of accessing State, Store, and Runtime Context in tools.
+
+## Middleware
+
+Middleware runs between nodes in the agent loop, providing hooks to modify context as it flows through your agent. Unlike the model and tool contexts which operate within their respective nodes, middleware intercepts and transforms data **between** nodes.
+
+### Messages
+
+Middleware can modify the messages persisted in state. This is different from the [Messages](#messages) examples in Model Context, which only affect what the LLM sees for a single call (transient context).
+
+#### Summarization
+
+One common use case is to automatically condense conversation history when it gets too long, preventing context window overflow.
+LangChain offers a built-in middleware for this:
+
+:::python
+```python
+from langchain.agents import create_agent
+from langchain.agents.middleware import SummarizationMiddleware
+
+agent = create_agent(
+    model="openai:gpt-4o",
+    tools=[...],
+    middleware=[
+        SummarizationMiddleware(
+            model="openai:gpt-4o-mini",
+            max_tokens_before_summary=4000,  # Trigger summarization at 4000 tokens
+            messages_to_keep=20,  # Keep last 20 messages after summary
+        ),
+    ],
+)
+```
+:::
+
+:::js
+```typescript
+import { createAgent, summarizationMiddleware } from "langchain";
+
+const agent = createAgent({
+  model: "openai:gpt-4o",
+  tools: [...],
+  middleware: [
+    summarizationMiddleware({
+      model: "openai:gpt-4o-mini",
+      maxTokensBeforeSummary: 4000, // Trigger summarization at 4000 tokens
+      messagesToKeep: 20, // Keep last 20 messages after summary
+    }),
+  ],
+});
+```
+:::
+
+When the conversation exceeds the token limit, `SummarizationMiddleware` automatically:
+1. Summarizes older messages using a separate LLM call
+2. Replaces them with a summary message in State
+3. Keeps recent messages intact for context
+
+The summarized conversation history is permanently updated - future turns will see the summary instead of the original messages.
+
+<Note>
+For a complete list of built-in middleware and how to create custom middleware, see the [Middleware documentation](/oss/langchain/middleware).
+</Note>
 
 ## Best practices
 
