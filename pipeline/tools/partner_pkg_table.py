@@ -179,7 +179,7 @@ def doc() -> str:
 ---
 title: Integration packages
 sidebarTitle: Overview
-mode: wide
+mode: "wide"
 ---
 {{/* File generated automatically by pipeline/tools/partner_pkg_table.py */}}
 {{/* Do not manually edit */}}
@@ -187,13 +187,13 @@ mode: wide
 LangChain Python offers an extensive ecosystem with 1000+ integrations across chat & embedding models, tools & toolkits, document loaders, vector stores, and more.
 
 <Columns cols={{3}}>
-    <Card title="Chat models" icon="message" href="/oss/integrations/chat">
+    <Card title="Chat models" icon="message" href="/oss/integrations/chat" arrow>
         Set up your project with our quickstart guide.
     </Card>
-    <Card title="Embedding models" icon="layer-group" href="/oss/integrations/text_embedding">
+    <Card title="Embedding models" icon="layer-group" href="/oss/integrations/text_embedding" arrow>
         Explore endpoints, parameters, and examples for your API.
     </Card>
-    <Card title="Tools and toolkits" icon="screwdriver-wrench" href="/oss/integrations/tools">
+    <Card title="Tools and toolkits" icon="screwdriver-wrench" href="/oss/integrations/tools" arrow>
         Explore endpoints, parameters, and examples for your API.
     </Card>
 </Columns>

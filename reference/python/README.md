@@ -156,7 +156,6 @@ The `pyproject.dev.toml` file expects repositories to be cloned in this structur
   ├── langchain-elastic/
   ├── langchain-google/
   ├── langchain-milvus/
-  ├── langchain-mongodb/
   ├── langchain-neo4j/
   ├── langchain-nvidia/
   ├── langchain-pinecone/
@@ -172,6 +171,8 @@ The `pyproject.dev.toml` file expects repositories to be cloned in this structur
   ├── langgraph-supervisor-py/
   └── langgraph-swarm-py/
 ```
+
+`langchain-mongodb` is not included as it is maintained and hosted separately by the MongoDB team.
 
 If you only need to work on specific packages, you can comment out the others in `pyproject.dev.toml`.
 
