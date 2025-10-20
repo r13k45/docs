@@ -54,112 +54,41 @@ The core agent loop is quite simple:
 
 The agent may have access to different context throughout this loop. What ultimately matters is the context passed to the LLM: the final prompt (or list of messages) and the tools it has access to.
 
-### Context engineering with LangChain
-
 LangChain gives you precise control over what information flows into your agent at each stage of the loop. You can access different **data sources** to inform your agent's behavior:
 
 - **State**: Short-term memory for a conversation session. Examples: messages, uploaded files, conversation context
 - **Store**: Long-term memory across sessions. Examples: user preferences, extracted insights, historical data
 - **Runtime Context**: Configuration for the current run (not modified by the agent). Examples: user ID, API keys, database connections
-- **Transient Messages**: The working list of messages being prepared for the current LLM call - can be modified before being sent
 
-LangChain uses [middleware](/oss/langchain/middleware) to give you fine-grained control over context at each stage of the agent loop. All the examples below use middleware to demonstrate context engineering patterns.
-
-## Quick start
-
-Here are the most common context engineering patterns to get you started:
+At each stage of the agent loop, you can read from (and sometimes write to) different data sources. LangChain uses [middleware](/oss/langchain/middleware) to give you fine-grained control over context at each stage. Click a card below to see detailed examples:
 
 <CardGroup cols={2}>
-  <Card title="Personalize with user preferences" icon="user">
-    Use **Store** to fetch user preferences and customize the agent's behavior based on long-term memory
-
-    ```python
-    @dynamic_prompt
-    def personalized_prompt(request: ModelRequest) -> str:
-        user_id = request.runtime.context.user_id
-        prefs = request.runtime.store.get(("preferences",), user_id)
-        return f"You are helpful. User prefers {prefs.value['style']} responses."
-    ```
-  </Card>
-
-  <Card title="Trim long conversations" icon="scissors">
-    Use **State** to manage conversation length and keep context within model limits
-
-    ```python
-    @before_model
-    def trim_messages(state: AgentState, runtime: Runtime) -> dict | None:
-        if len(state["messages"]) > 10:
-            return {"messages": [state["messages"][0], *state["messages"][-8:]]}
-    ```
-  </Card>
-
-  <Card title="Control access by role" icon="shield-halved">
-    Use **Runtime Context** to filter tools based on user permissions
-
-    ```python
-    @wrap_model_call
-    def filter_by_role(request: ModelRequest, handler) -> ModelResponse:
-        if request.runtime.context.user_role != "admin":
-            request.tools = [t for t in request.tools if t.name.startswith("read_")]
-        return handler(request)
-    ```
-  </Card>
-
-  <Card title="Filter sensitive data" icon="eye-slash">
-    Use **Transient Messages** to remove sensitive information before sending to LLM
-
-    ```python
-    @wrap_model_call
-    def filter_sensitive(request: ModelRequest, handler) -> ModelResponse:
-        request.messages = [m for m in request.messages if "password" not in str(m).lower()]
-        return handler(request)
-    ```
-  </Card>
-</CardGroup>
-
-## Context engineering by stage
-
-At each stage of the agent loop, you can read from (and sometimes write to) different data sources. Click a card below to see detailed examples:
-
-<CardGroup cols={3}>
-  <Card title="Configure System Prompt" icon="comment-dots" href="#configure-system-prompt">
+  <Card title="System Prompt" icon="comment-dots" href="#system-prompt">
     Dynamically set the system prompt based on State, Store, or Runtime Context
-
-    **Access**: State (read), Store (read), Runtime Context (read), Transient Messages (read)
   </Card>
 
-  <Card title="Configure Messages" icon="messages" href="#configure-messages">
+  <Card title="Messages" icon="messages" href="#messages">
     Trim, summarize, or transform messages before sending to the LLM
-
-    **Access**: State (read/write), Store (read/write), Runtime Context (read), Transient Messages (read/write)
   </Card>
 
-  <Card title="Configure Tools" icon="wrench" href="#configure-tools">
+  <Card title="Select Tools" icon="wrench" href="#select-tools">
     Dynamically select which tools are available based on context
-
-    **Access**: State (read), Store (read), Runtime Context (read)
   </Card>
 
-  <Card title="Configure Model" icon="microchip" href="#configure-model">
+  <Card title="Model" icon="microchip" href="#model">
     Switch between models based on conversation length, user preferences, or cost constraints
-
-    **Access**: State (read), Store (read), Runtime Context (read)
   </Card>
 
-  <Card title="Configure Structured Output" icon="table" href="#configure-structured-output">
+  <Card title="Structured Output" icon="table" href="#structured-output">
     Change output format based on conversation stage or user preferences
-
-    **Access**: State (read), Store (read), Runtime Context (read)
   </Card>
 
   <Card title="Execute Tools" icon="play" href="#execute-tools">
     Access and update context within tool execution
-
-    **Access**: State (read/write), Store (read/write), Runtime Context (read)
   </Card>
 </CardGroup>
 
-## Configure System Prompt
+## System Prompt
 
 Dynamically configure the system prompt based on conversation state, user preferences, or runtime configuration.
 
@@ -373,66 +302,9 @@ Dynamically configure the system prompt based on conversation state, user prefer
     :::
   </Tab>
 
-  <Tab title="Transient Messages">
-    Read transient messages to adjust the system prompt:
-
-    :::python
-    ```python
-    from langchain.agents import create_agent
-    from langchain.agents.middleware import dynamic_prompt, ModelRequest
-
-    @dynamic_prompt
-    def message_aware_prompt(request: ModelRequest) -> str:
-        # Read from Transient Messages: check what's being sent to LLM
-        transient_messages = request.messages
-
-        base = "You are a helpful assistant."
-
-        # Check if user mentioned specific topics in transient messages
-        if any("urgent" in str(msg).lower() for msg in transient_messages):
-            base += "\nThis request appears urgent - prioritize quick, actionable responses."
-
-        return base
-
-    agent = create_agent(
-        model="openai:gpt-4o",
-        tools=[...],
-        middleware=[message_aware_prompt]
-    )
-    ```
-    :::
-
-    :::js
-    ```typescript
-    import { createAgent, dynamicSystemPromptMiddleware } from "langchain";
-
-    const agent = createAgent({
-      model: "openai:gpt-4o",
-      tools: [...],
-      middleware: [
-        dynamicSystemPromptMiddleware((state, runtime, messages) => {
-          // Read from Transient Messages: check what's being sent to LLM
-          const transientMessages = messages;
-
-          let base = "You are a helpful assistant.";
-
-          // Check if user mentioned specific topics
-          if (transientMessages.some(msg =>
-            JSON.stringify(msg).toLowerCase().includes("urgent")
-          )) {
-            base += "\nThis request appears urgent - prioritize quick, actionable responses.";
-          }
-
-          return base;
-        }),
-      ],
-    });
-    ```
-    :::
-  </Tab>
 </Tabs>
 
-## Configure Messages
+## Messages
 
 Manage conversation history by trimming, summarizing, or filtering messages before they're sent to the LLM.
 
@@ -681,68 +553,13 @@ Manage conversation history by trimming, summarizing, or filtering messages befo
     :::
   </Tab>
 
-  <Tab title="Transient Messages">
-    Directly modify the transient message list before sending to LLM:
-
-    :::python
-    ```python
-    from langchain.agents import create_agent
-    from langchain.agents.middleware import wrap_model_call, ModelRequest, ModelResponse
-    from typing import Callable
-
-    @wrap_model_call
-    def filter_transient_messages(
-        request: ModelRequest,
-        handler: Callable[[ModelRequest], ModelResponse]
-    ) -> ModelResponse:
-        """Read and modify Transient Messages list."""
-        # Read from Transient Messages
-        messages = request.messages
-
-        # Filter out messages containing sensitive information
-        filtered_messages = [
-            msg for msg in messages
-            if "password" not in str(msg).lower()
-        ]
-
-        # Write to Transient Messages: update the list
-        request.messages = filtered_messages
-
-        return handler(request)
-
-    agent = create_agent(
-        model="openai:gpt-4o",
-        tools=[...],
-        middleware=[filter_transient_messages]
-    )
-    ```
-    :::
-
-    :::js
-    ```typescript
-    import { createMiddleware } from "langchain";
-
-    const filterTransientMessages = createMiddleware({
-      name: "FilterTransientMessages",
-      wrapModelCall: (request, handler) => {
-        // Read from Transient Messages
-        const messages = request.messages;
-
-        // Filter out messages containing sensitive information
-        const filteredMessages = messages.filter(msg =>
-          !JSON.stringify(msg).toLowerCase().includes("password")
-        );
-
-        // Write to Transient Messages: update the list
-        return handler({ ...request, messages: filteredMessages });
-      },
-    });
-    ```
-    :::
-  </Tab>
 </Tabs>
 
-## Configure Tools
+<Note>
+You can also directly modify the message list being sent to the LLM using `wrap_model_call` middleware. This lets you filter out sensitive information or transform messages right before they're sent. See the [middleware documentation](/oss/langchain/middleware#wrap-model-call) for examples.
+</Note>
+
+## Select Tools
 
 Dynamically select which tools are available to the agent based on context like user permissions, conversation state, or feature flags.
 
@@ -965,7 +782,7 @@ Dynamically select which tools are available to the agent based on context like 
 
 See [Dynamically selecting tools](/oss/langchain/middleware#dynamically-selecting-tools) for more examples.
 
-## Configure Model
+## Model
 
 Switch between different models dynamically based on conversation length, user preferences, or cost constraints.
 
@@ -1196,7 +1013,7 @@ Switch between different models dynamically based on conversation length, user p
 
 See [Dynamic model](/oss/langchain/agents#dynamic-model) for more examples.
 
-## Configure Structured Output
+## Structured Output
 
 Change the structured output format based on conversation stage, user preferences, or runtime configuration.
 
