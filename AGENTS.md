@@ -70,7 +70,6 @@ In general, follow the [Google Developer Documentation Style Guide](https://deve
 - Include both basic and advanced use cases
 - Language tags on all code blocks
 - Alt text on all images
-- After imports in a code block, there should be two newlines before the first line of code
 - Root relative paths for internal links
 - Correct spelling
 - Correct grammar

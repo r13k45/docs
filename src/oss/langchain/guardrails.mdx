@@ -207,9 +207,8 @@ agent = create_agent(
             }
         ),
     ],
-    # persist the state across interrupts
+    # Persist the state across interrupts
     checkpointer=InMemorySaver(),
-
 )
 
 # Human-in-the-loop requires a thread ID for persistence
@@ -322,7 +321,6 @@ class ContentFilterMiddleware(AgentMiddleware):
 # Use the custom guardrail
 from langchain.agents import create_agent
 
-
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[search_tool, calculator_tool],
@@ -376,7 +374,6 @@ def content_filter(state: AgentState, runtime: Runtime) -> dict[str, Any] | None
 
 # Use the custom guardrail
 from langchain.agents import create_agent
-
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -507,7 +504,6 @@ class SafetyGuardrailMiddleware(AgentMiddleware):
 # Use the safety guardrail
 from langchain.agents import create_agent
 
-
 agent = create_agent(
     model="openai:gpt-4o",
     tools=[search_tool, calculator_tool],
@@ -560,7 +556,6 @@ def safety_guardrail(state: AgentState, runtime: Runtime) -> dict[str, Any] | No
 
 # Use the safety guardrail
 from langchain.agents import create_agent
-
 
 agent = create_agent(
     model="openai:gpt-4o",
@@ -646,7 +641,6 @@ You can stack multiple guardrails by adding them to the middleware array. They e
 ```python
 from langchain.agents import create_agent
 from langchain.agents.middleware import PIIMiddleware, HumanInTheLoopMiddleware
-
 
 agent = create_agent(
     model="openai:gpt-4o",

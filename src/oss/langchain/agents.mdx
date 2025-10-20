@@ -80,7 +80,6 @@ Static models are configured once when creating the agent and remain unchanged t
 ```python wrap
 from langchain.agents import create_agent
 
-
 agent = create_agent(
     "openai:gpt-5",
     tools=tools
@@ -108,7 +107,6 @@ For more control over the model configuration, initialize a model instance direc
 ```python wrap
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
-
 
 model = ChatOpenAI(
     model="gpt-5",
