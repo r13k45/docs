@@ -4,5 +4,5 @@
 
 <!-- Copied from https://python.langchain.com/api_reference/langchain/retrievers.html -->
 
---8<-- "wip.md"WIP
+--8<-- "wip.md"
 <!-- ::: langchain_classic.retrievers -->
