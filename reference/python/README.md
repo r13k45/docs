@@ -43,7 +43,6 @@ handlers:
 This site is currently being migrated from a previous Sphinx-based implementation, so there are still some rough edges to be smoothed out. Here are some known issues and potential improvements:
 
 - [ ] For methods that are from base classes, indicate it is inherited from such and link to the base class
-- [ ] Unmaintained package callout snippet for `langchain-classic` pages
 - [ ] Exclude `langchain-classic` pages from search results?
 - [ ] [Backlinks](https://mkdocstrings.github.io/python/usage/configuration/general/#backlinks)
 - [ ] [More xref](https://github.com/analog-garage/mkdocstrings-python-xref)
