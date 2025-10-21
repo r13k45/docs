@@ -4,8 +4,7 @@ title: LangSmith SDK - LangChain Reference
 
 Welcome to the LangSmith Python SDK reference docs! These pages detail the core interfaces you will use when building with LangSmith's Observability and Evaluations tools.
 
-!!! warning "Work in progress"
-    This page is a work in progress, and we appreciate your patience as we continue to expand and improve the content.
+--8<-- "wip.md"
 
 ## Quick Reference
 

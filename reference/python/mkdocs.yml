@@ -335,7 +335,7 @@ nav:
   - Get started: index.md
   - LangChain:
     - LangChain reference: langchain/index.md
-    - "`langchain`":
+    - langchain:
       - Overview: langchain/langchain/index.md
       - Agents: langchain/agents.md
       - Middleware: langchain/middleware.md
@@ -343,7 +343,7 @@ nav:
       - Messages: langchain/messages.md
       - Tools: langchain/tools.md
       - Embeddings: langchain/embeddings.md
-    - "`langchain-core`":
+    - langchain-core:
       - Overview: langchain_core/index.md
       - Caches: langchain_core/caches.md
       - Callbacks: langchain_core/callbacks.md
@@ -359,17 +359,32 @@ nav:
       - Runnables: langchain_core/runnables.md
       - Utilities: langchain_core/utils.md
       - Vector stores: langchain_core/vectorstores.md
-    - "`langchain-classic`":
+    - langchain-classic:
       - Overview: langchain_classic/index.md
-    - "`langchain-text-splitters`":
+      - Agents: langchain_classic/agents.md
+      - Callbacks: langchain_classic/callbacks.md
+      - Chains: langchain_classic/chains.md
+      - Chat models: langchain_classic/chat_models.md
+      - Embeddings: langchain_classic/embeddings.md
+      - Evaluation: langchain_classic/evaluation.md
+      - Globals: langchain_classic/globals.md
+      - Hub: langchain_classic/hub.md
+      - Memory: langchain_classic/memory.md
+      - Model laboratory: langchain_classic/model_laboratory.md
+      - Output parsers: langchain_classic/output_parsers.md
+      - Retrievers: langchain_classic/retrievers.md
+      - Runnables: langchain_classic/runnables.md
+      - LangSmith: langchain_classic/smith.md
+      - Storage: langchain_classic/storage.md
+    - langchain-text-splitters:
       - Overview: langchain_text_splitters/index.md
-    - "`langchain-tests`":
+    - langchain-tests:
       - langchain_tests/index.md
       - Unit tests: langchain_tests/unit_tests.md
       - Integration tests: langchain_tests/integration_tests.md
   - LangGraph:
     - LangGraph reference: langgraph/index.md
-    - "`langgraph`":
+    - langgraph:
       - Graphs: langgraph/graphs.md
       - Functional API: langgraph/func.md
       - Pregel: langgraph/pregel.md
@@ -389,7 +404,7 @@ nav:
       - MCP Adapters: langgraph/mcp.md
   - Deep Agents:
     - Deep Agents reference: deepagents/index.md
-    - "`deepagents`": deepagents/deepagents.md
+    - deepagents: deepagents/deepagents.md
   - Integrations:
     - LangChain integrations: integrations/index.md
     - All packages:
@@ -452,8 +467,8 @@ nav:
       - SDK:
         - LangSmith SDK reference: langsmith/observability/sdk/index.md
         - Core APIs:
-          - "`Client`": langsmith/observability/sdk/client.md
-          - "`AsyncClient`": langsmith/observability/sdk/async_client.md
+          - Client: langsmith/observability/sdk/client.md
+          - AsyncClient: langsmith/observability/sdk/async_client.md
           - Run Helpers: langsmith/observability/sdk/run_helpers.md
           - Run Trees: langsmith/observability/sdk/run_trees.md
           - Evaluation: langsmith/observability/sdk/evaluation.md
@@ -576,10 +591,10 @@ markdown_extensions:
   - pymdownx.keys
 
   # https://mrkeo.github.io/reference/code-blocks/#snippets
-  # TODO: maybe add if needed?
-  # Might be useful for common package homepages/indexes
   # Allows inserting content from other files
-  # - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path:
+        - docs/_snippets
 
 # https://www.mkdocs.org/user-guide/configuration/#validation
 # TODO: ensure config is tuned correctly

@@ -6,5 +6,4 @@
 
 Reference documentation for the [`langchain-classic`](https://pypi.org/project/langchain-classic/) package.
 
-!!! warning "Work in progress"
-    This page is a work in progress, and we appreciate your patience as we continue to expand and improve the content.
+--8<-- "wip.md"
