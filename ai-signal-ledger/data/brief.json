@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-03-31T00:00:00.000Z",
+  "methodology": {
+    "title": "Curated source-first AI intelligence brief",
+    "summary": "This is a placeholder dataset. Run the GitHub Action or `npm run build:data` in a network-enabled environment to generate live AI updates.",
+    "caveats": [
+      "Live data is not bundled in this local placeholder file.",
+      "Each item in production is linked back to its original source URL.",
+      "Categorization is heuristic and intended for triage."
+    ]
+  },
+  "sourceGroups": [
+    {
+      "group": "research",
+      "attemptedSources": [],
+      "itemCount": 1,
+      "errors": []
+    },
+    {
+      "group": "news",
+      "attemptedSources": [],
+      "itemCount": 1,
+      "errors": []
+    },
+    {
+      "group": "threads",
+      "attemptedSources": [],
+      "itemCount": 1,
+      "errors": []
+    }
+  ],
+  "sections": {
+    "research": [
+      {
+        "title": "Waiting for live research feed",
+        "url": "https://arxiv.org",
+        "publishedAt": "2026-03-31T00:00:00.000Z",
+        "summary": "The scheduled workflow will ingest recent arXiv submissions and attach source URLs, authors, and timestamps.",
+        "authors": [
+          "System"
+        ],
+        "source": "arXiv",
+        "feed": "Placeholder",
+        "provenance": "https://arxiv.org",
+        "category": "Research",
+        "ageHours": 0
+      }
+    ],
+    "news": [
+      {
+        "title": "Waiting for live news feed",
+        "url": "https://openai.com/news/",
+        "publishedAt": "2026-03-31T00:00:00.000Z",
+        "summary": "The scheduled workflow will collect recent AI news entries from configured RSS sources and preserve their publication timestamps.",
+        "authors": [
+          "System"
+        ],
+        "source": "News",
+        "feed": "Placeholder",
+        "provenance": "https://openai.com/news/",
+        "category": "Products",
+        "ageHours": 0
+      }
+    ],
+    "threads": [
+      {
+        "title": "Waiting for live Threads feed",
+        "url": "https://www.threads.net",
+        "publishedAt": "2026-03-31T00:00:00.000Z",
+        "summary": "Threads coverage is fetched through RSSHub-compatible adapters. If a configured profile does not expose a route, the site will show the source error transparently.",
+        "authors": [
+          "System"
+        ],
+        "source": "Threads via RSSHub",
+        "feed": "Placeholder",
+        "provenance": "https://rsshub.app",
+        "category": "General",
+        "ageHours": 0
+      }
+    ]
+  },
+  "summary": {
+    "totalItems": 3,
+    "last24h": 3,
+    "topCategories": [
+      {
+        "name": "Research",
+        "count": 1
+      },
+      {
+        "name": "Products",
+        "count": 1
+      },
+      {
+        "name": "General",
+        "count": 1
+      }
+    ]
+  }
+}
