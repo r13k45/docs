@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Signal Ledger</title>
+    <meta
+      name="description"
+      content="A clean, source-first AI intelligence page aggregating arXiv research, news, and Threads signals."
+    >
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="background" aria-hidden="true"></div>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">AI Signal Ledger</p>
+        <h1>Track the latest AI signals with source-first discipline.</h1>
+        <p class="hero-copy">
+          Aggregate arXiv research, AI news, and Threads activity while preserving the original URL, publication time,
+          and categorization logic. This is a traceable intelligence board, not a vague summary page.
+        </p>
+        <div class="hero-meta" id="hero-meta"></div>
+      </section>
+
+      <section class="summary-grid" id="summary-grid"></section>
+
+      <section class="controls">
+        <div class="control-copy">
+          <p class="section-label">Signal View</p>
+          <h2>Browse by section</h2>
+        </div>
+        <div class="tabs" id="tabs" role="tablist" aria-label="Sections"></div>
+      </section>
+
+      <section class="board">
+        <aside class="methodology">
+          <p class="section-label">Method</p>
+          <h3>Accuracy boundary</h3>
+          <p id="method-summary"></p>
+          <ul id="method-caveats"></ul>
+          <div class="source-status" id="source-status"></div>
+        </aside>
+        <div class="feed" id="feed"></div>
+      </section>
+    </main>
+
+    <template id="card-template">
+      <article class="card">
+        <div class="card-topline">
+          <span class="pill source"></span>
+          <span class="pill category"></span>
+        </div>
+        <h3 class="title"></h3>
+        <p class="meta"></p>
+        <p class="summary"></p>
+        <div class="card-footer">
+          <span class="authors"></span>
+          <a class="link" target="_blank" rel="noreferrer">Source</a>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+  </html>
