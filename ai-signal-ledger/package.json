@@ -1,0 +1,9 @@
+{
+  "name": "ai-intel-brief",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:data": "node scripts/build-data.mjs"
+  }
+}
